@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C1E8CCCE2B10309800393AA8 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCD2B10309800393AA8 /* Collection.swift */; };
+		C1E8CCD02B10602400393AA8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCF2B10602400393AA8 /* Color.swift */; };
+		C1E8CCD12B10602400393AA8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCF2B10602400393AA8 /* Color.swift */; };
+		C1E8CCD22B10602400393AA8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCF2B10602400393AA8 /* Color.swift */; };
 		DC079F74259BAED800F1CB0E /* InteractiveChartViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC079F73259BAED800F1CB0E /* InteractiveChartViewModifier.swift */; };
 		DC079F80259C34BB00F1CB0E /* LabeledChartViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC079F7F259C34BB00F1CB0E /* LabeledChartViewModifier.swift */; };
 		DC0DE589258C1B6C00FD75A0 /* EnvironmentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE588258C1B6C00FD75A0 /* EnvironmentValues.swift */; };
@@ -252,6 +255,7 @@
 
 /* Begin PBXFileReference section */
 		C1E8CCCD2B10309800393AA8 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
+		C1E8CCCF2B10602400393AA8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		DC079F73259BAED800F1CB0E /* InteractiveChartViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveChartViewModifier.swift; sourceTree = "<group>"; };
 		DC079F7F259C34BB00F1CB0E /* LabeledChartViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledChartViewModifier.swift; sourceTree = "<group>"; };
 		DC0DE588258C1B6C00FD75A0 /* EnvironmentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentValues.swift; sourceTree = "<group>"; };
@@ -688,6 +692,7 @@
 				DC3B36B9263BB87800DA83E1 /* SDTide.swift */,
 				DC3B36BA263BB87800DA83E1 /* SDTideStation.swift */,
 				DC3B36BB263BB87800DA83E1 /* String.swift */,
+				C1E8CCCF2B10602400393AA8 /* Color.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1028,6 +1033,7 @@
 				DC25E6D02636870900D214D0 /* ContentView.swift in Sources */,
 				DCE3306326A1F6BA007A6E9E /* ConfigHelper.swift in Sources */,
 				DC3B36D1263BBC6F00DA83E1 /* TimeInterval+Units.swift in Sources */,
+				C1E8CCD12B10602400393AA8 /* Color.swift in Sources */,
 				DC25E6CE2636870900D214D0 /* HostingController.swift in Sources */,
 				DC3B36CC263BB8A200DA83E1 /* String.swift in Sources */,
 				DCD7C96826507C09006327D2 /* Array+RawRepresentable.swift in Sources */,
@@ -1062,6 +1068,7 @@
 				DC246B1826214ED20090F38B /* LocationDateViewModifier.swift in Sources */,
 				DC246ADC2615712D0090F38B /* MonthView.swift in Sources */,
 				DC0DE589258C1B6C00FD75A0 /* EnvironmentValues.swift in Sources */,
+				C1E8CCD02B10602400393AA8 /* Color.swift in Sources */,
 				DC0DE7C72593B2E400FD75A0 /* AppStateRepository.swift in Sources */,
 				DC3B36BE263BB89B00DA83E1 /* Date.swift in Sources */,
 				DC3B36BF263BB89B00DA83E1 /* SDTideStation.swift in Sources */,
@@ -1146,6 +1153,7 @@
 				DCC85C70267C2915007E0C0B /* TideWidgetExtension.swift in Sources */,
 				DC1FE87B269BB7860015F6AA /* ChartUtils.swift in Sources */,
 				DCEA900B2693B94000B8A6C7 /* shralptide.xcdatamodeld in Sources */,
+				C1E8CCD22B10602400393AA8 /* Color.swift in Sources */,
 				DCEA90302693C9B000B8A6C7 /* String.swift in Sources */,
 				DCEA90102693B9A400B8A6C7 /* NoaaStationData.swift in Sources */,
 				DCEA90112693B9A800B8A6C7 /* StationData.swift in Sources */,

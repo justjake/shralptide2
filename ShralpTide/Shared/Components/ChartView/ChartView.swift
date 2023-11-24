@@ -10,6 +10,7 @@
     import ShralpTideFramework
 #endif
 import SwiftUI
+import Charts
 
 struct ChartView: View {
     private let dateFormatter = DateFormatter()
@@ -85,8 +86,53 @@ struct ChartView: View {
         path.addLine(to: CGPoint(x: 0, y: height))
 
         // fill in the tide level curve
-        let tideColor = Color(red: 0, green: 1, blue: 1).opacity(0.7)
-        return path.fill(tideColor)
+        return path.fill(.linearGradient(.init(colors: [.IndigoFlowerGrey, .WhitePlumGrey]), startPoint: .top, endPoint: .bottom))
+    }
+    
+    private func drawTideLevelAsChart(
+        _ baseSeconds: TimeInterval, _ xratio: CGFloat, _ yoffset: CGFloat, _ yratio: CGFloat,
+        _ height: CGFloat
+    ) -> some View {
+        let intervalsForDay: [SDTideInterval] = tideData.intervals(
+            from: Date(timeIntervalSince1970: baseSeconds), forHours: tideData.hoursToPlot()
+        )
+        let idIntervals = intervalsForDay.map { WithID(value: $0) }
+        
+        return Chart(idIntervals) { withId in
+            let tidePoint = withId.value
+            AreaMark(
+                x: .value("Time", tidePoint.time),
+                y: .value("Height", tidePoint.height))
+                .foregroundStyle(.linearGradient(.init(colors: [.IndigoFlowerGrey, .WhitePlumGrey]), startPoint: .top , endPoint: .bottom))
+            
+        }
+        
+        
+//        var path = Path { tidePath in
+//            for tidePoint: SDTideInterval in intervalsForDay {
+//                let minute =
+//                    Int(tidePoint.time.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
+//                let point = CGPoint(
+//                    x: CGFloat(minute) * xratio, y: yoffset - CGFloat(tidePoint.height) * yratio
+//                )
+//                if minute == 0 {
+//                    tidePath.move(to: point)
+//                } else {
+//                    tidePath.addLine(to: point)
+//                }
+//            }
+//        }
+//
+//        // closes the path so it can be filled
+//        let lastMinute =
+//            Int(intervalsForDay.last!.time.timeIntervalSince1970 - baseSeconds)
+//                / ChartConstants.secondsPerMinute
+//        path.addLine(to: CGPoint(x: CGFloat(lastMinute) * xratio, y: height))
+//        path.addLine(to: CGPoint(x: 0, y: height))
+//
+//        // fill in the tide level curve
+//        let tideColor = Color(red: 0, green: 1, blue: 1).opacity(0.7)
+//        return path.fill(tideColor)
     }
 
     private func drawMoonlight(_ baseSeconds: TimeInterval, _ xratio: CGFloat, _ height: CGFloat)
@@ -167,4 +213,9 @@ struct ChartView: View {
             }
         }
     }
+}
+
+struct WithID<T> : Identifiable {
+    let value: T
+    let id = UUID()
 }

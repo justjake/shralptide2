@@ -78,7 +78,7 @@ class AppStateRepository {
     fileprivate func setDefaultLocation(isLegacy: Bool) throws {
         let defaultLocation =
             isLegacy
-                ? "La Jolla, Scripps Pier, California" : "La Jolla (Scripps Institution Wharf), California"
+                ? "La Jolla, Scripps Pier, California" : "Santa Barbara, Pacific Ocean, California"
         let context = managedObjectContext!
 
         let appState = persistentState ?? SDApplicationState(context: context)
