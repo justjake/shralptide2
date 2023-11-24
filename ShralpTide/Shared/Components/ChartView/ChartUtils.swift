@@ -21,19 +21,19 @@ internal func imageForEvent(_ event: SDTideEvent) -> some View {
     switch event.eventType {
     case .moonrise:
         return Color.white
-            .mask(Image("moonrise_trnspt"))
+            .mask(Image(systemName: "moon.fill"))
     case .moonset:
         return Color.white
-            .mask(Image("moonset_trnspt"))
+                .mask(Image(systemName: "moon.haze"))
     case .sunrise:
         return Color.yellow
-            .mask(Image("sunrise_trnspt"))
+            .mask(Image(systemName: "sunrise.fill"))
     case .sunset:
         return Color.orange
-            .mask(Image("sunset_trnspt"))
+            .mask(Image(systemName: "sunset"))
     default:
         return Color.yellow
-            .mask(Image("sunset_trnspt"))
+            .mask(Image(systemName: "sunset"))
     }
 }
 
@@ -49,7 +49,7 @@ internal func calculateDimensions(_ proxy: GeometryProxy, tideData: SDTide, perc
     let min: CGFloat = findLowestTideValue(tideData)
     let max: CGFloat = findHighestTideValue(tideData)
 
-    let ymin: CGFloat = min - 1
+    let ymin: CGFloat = CGFloat.minimum(min - 1, -0.5)
     let ymax: CGFloat = max + 1
 
     let xmin: Int = 0
@@ -66,7 +66,9 @@ internal func calculateDimensions(_ proxy: GeometryProxy, tideData: SDTide, perc
         yoffset: yoffset,
         yratio: yratio,
         xmin: xmin,
-        xmax: xmax
+        xmax: xmax,
+        ymin: ymin,
+        ymax: ymax
     )
 }
 
@@ -97,4 +99,6 @@ struct ChartDimensions {
     let yratio: CGFloat
     let xmin: Int
     let xmax: Int
+    let ymin: CGFloat
+    let ymax: CGFloat
 }

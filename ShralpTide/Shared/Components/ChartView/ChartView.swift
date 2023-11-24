@@ -92,8 +92,7 @@ struct ChartView: View {
     }
     
     private func drawTideLevelAsChart(
-        _ baseSeconds: TimeInterval, _ xratio: CGFloat, _ yoffset: CGFloat, _ yratio: CGFloat,
-        _ height: CGFloat
+        _ baseSeconds: TimeInterval, _ dim: ChartDimensions
     ) -> some View {
         let intervalsForDay: [SDTideInterval] = tideData.intervals(
             from: Date(timeIntervalSince1970: baseSeconds), forHours: tideData.hoursToPlot()
@@ -101,21 +100,23 @@ struct ChartView: View {
         let idIntervals = intervalsForDay.map { WithID(value: $0) }
         
         let max = Double(truncating: tideData.highestTide)
-        let sunriseDuration = 60 * 30
         
         return Chart {
             Plot {
                 ForEach(getDaylightPairs()) { withId in
                     let (rise, set) = withId.value
-                    AreaMark(x: .value("Time", rise), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.pink)
+                    if rise != tideData.startTime {
+                        AreaMark(x: .value("Time", rise - 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
+                            .foregroundStyle(.yellow.opacity(0.3))
+                            .interpolationMethod(.linear)
+                    }
                     AreaMark(x: .value("Time", rise + 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.pink)
-                    AreaMark(x: .value("Time", set), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.pink)
-                    AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.pink)
-                        .interpolationMethod(.monotone)
+                            .foregroundStyle(.yellow.opacity(0.3))
+                            .interpolationMethod(.linear)
+                    AreaMark(x: .value("Time", set - 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
+                    if set != tideData.stopTime {
+                        AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
+                    }
 //                    RectangleMark(xStart: .value("Time", rise), xEnd: .value("Time", set))
 //                        .foregroundStyle(Color(red: 0.04, green: 0.27, blue: 0.61))
                 }
@@ -125,8 +126,18 @@ struct ChartView: View {
             Plot {
                 ForEach(getMoonlightPairs()) { withId in
                     let (rise, set) = withId.value
-                    RectangleMark(xStart: .value("Time", rise), xEnd: .value("Time", set))
-                        .foregroundStyle(Color(red: 1, green: 1, blue: 1).opacity(0.2))
+                    if rise != tideData.startTime {
+                        AreaMark(x: .value("Time", rise - 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
+                            .foregroundStyle(.gray.opacity(0.2))
+                            .interpolationMethod(.catmullRom)
+                    }
+                    AreaMark(x: .value("Time", rise + 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
+                            .foregroundStyle(.gray.opacity(0.2))
+                            .interpolationMethod(.catmullRom)
+                    AreaMark(x: .value("Time", set - 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
+                    if set != tideData.stopTime {
+                        AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
+                    }
                 }
             }
             
@@ -141,7 +152,7 @@ struct ChartView: View {
                     .foregroundStyle(
                         .linearGradient(
                             .init(
-                                colors: [.IndigoFlowerGrey.opacity(0.6), .WhitePlumGrey.opacity(0.6)]),
+                                colors: [.IndigoFlowerGrey.opacity(0.8), .WhitePlumGrey.opacity(0.8)]),
                                 startPoint: .top,
                                 endPoint: .bottom
                         )
@@ -158,6 +169,7 @@ struct ChartView: View {
                     RuleMark(x: .value("Time", closest.time))
                         .foregroundStyle(.white.opacity(0.8))
                     PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
+                        .symbolSize(20)
                         .foregroundStyle(.white)
                 }
             }
@@ -176,6 +188,7 @@ struct ChartView: View {
                 }
             #endif
         }
+        .chartYScale(domain: Float(dim.ymin)...Float(dim.ymax))
         
         
 //        var path = Path { tidePath in
@@ -293,7 +306,7 @@ struct ChartView: View {
                 .fill(Color.black)
 //            drawDaylight(baseSeconds, dim.xratio, dim.height)
 //            drawMoonlight(baseSeconds, dim.xratio, dim.height)
-            drawTideLevelAsChart(baseSeconds, dim.xratio, dim.yoffset, dim.yratio, dim.height)
+            drawTideLevelAsChart(baseSeconds, dim)
             if showZero && dim.height >= dim.yoffset {
                 drawBaseline(dim)
             }
