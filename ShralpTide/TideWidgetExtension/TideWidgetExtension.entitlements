@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.shralpsoftware.shared.config</string>
+		<string>group.tl.jake.tide.shared.config</string>
 	</array>
 	<key>com.apple.security.network.client</key>
 	<true/>

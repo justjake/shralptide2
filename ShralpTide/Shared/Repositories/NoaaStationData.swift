@@ -11,7 +11,7 @@ import Foundation
 class NoaaStationData: StationData {
     fileprivate lazy var noaaTidesUrl: URL = {
         let directory = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.shralpsoftware.shared.config")!
+            forSecurityApplicationGroupIdentifier: "group.tl.jake.tide.shared.config")!
         return directory.appendingPathComponent("noaa-data.sqlite")
     }()
 

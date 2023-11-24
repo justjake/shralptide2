@@ -31,10 +31,10 @@ class Provider: IntentTimelineProvider {
     
     typealias Intent = SelectLocationIntent
     
-    @AppStorage("units_preference", store: UserDefaults(suiteName: "group.com.shralpsoftware.shared.config"))
+    @AppStorage("units_preference", store: UserDefaults(suiteName: "group.tl.jake.tide.shared.config"))
     var units = "US"
     
-    let log = Logger(subsystem: "com.shralpsoftware.ShralpTide2", category: "TideWidget")
+    let log = Logger(subsystem: "tl.jake.tide.ShralpTide2", category: "TideWidget")
         
     let defaultLocation = "La Jolla (Scripps Institution Wharf), California"
     

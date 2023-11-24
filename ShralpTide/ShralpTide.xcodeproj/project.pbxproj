@@ -1249,7 +1249,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 4.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1275,7 +1275,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 4.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1424,7 +1424,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShralpTide2/ShralpTide.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1444,7 +1444,7 @@
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2;
 				PRODUCT_NAME = ShralpTide;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1464,7 +1464,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShralpTide2/ShralpTide.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1483,7 +1483,7 @@
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2;
 				PRODUCT_NAME = ShralpTide;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1508,7 +1508,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shralpsoftware.Tests-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "tl.jake.tide.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -1530,7 +1530,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shralpsoftware.Tests-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "tl.jake.tide.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -1555,7 +1555,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shralpsoftware.Tests-macOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "tl.jake.tide.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
@@ -1578,7 +1578,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.shralpsoftware.Tests-macOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "tl.jake.tide.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
@@ -1605,7 +1605,7 @@
 				);
 				MARKETING_VERSION = 4.1.1;
 				OTHER_SWIFT_FLAGS = "-DWIDGET_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.TideWidgetExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.TideWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1633,7 +1633,7 @@
 				);
 				MARKETING_VERSION = 4.1.1;
 				OTHER_SWIFT_FLAGS = "-DWIDGET_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.TideWidgetExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.TideWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1660,7 +1660,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 4.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.LocationIntentsExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.LocationIntentsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1685,7 +1685,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 4.1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.shralpsoftware.ShralpTide2.LocationIntentsExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2.LocationIntentsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

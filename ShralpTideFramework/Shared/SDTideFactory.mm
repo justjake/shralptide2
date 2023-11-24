@@ -235,7 +235,7 @@ static NSArray* rawEventsForLocation(const Dstr &name, Interval step, Timestamp 
 
 static void setHarmonicsFilePaths() {
     // Load the tide station data
-    NSBundle *bundle = [NSBundle bundleWithIdentifier:@"com.shralpsoftware.ShralpTideFramework"];
+    NSBundle *bundle = [NSBundle bundleWithIdentifier:@"tl.jake.tide.ShralpTideFramework"];
     NSMutableString *pathBuilder = [[NSMutableString alloc] init];
     [pathBuilder appendString:[bundle pathForResource:@"harmonics-20040614-wxtide" ofType:@"tcd"]];
     [pathBuilder appendString:@":"];

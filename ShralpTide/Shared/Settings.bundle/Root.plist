@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ApplicationGroupContainerIdentifier</key>
-	<string>group.com.shralpsoftware.shared.config</string>
+	<string>group.tl.jake.tide.shared.config</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>

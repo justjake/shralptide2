@@ -11,7 +11,7 @@ import Foundation
 class LegacyStationData: StationData {
     fileprivate lazy var LegacyTideUrl: URL = {
         let directory = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.shralpsoftware.shared.config")!
+            forSecurityApplicationGroupIdentifier: "group.tl.jake.tide.shared.config")!
         return directory.appendingPathComponent("legacy-data.sqlite")
     }()
 

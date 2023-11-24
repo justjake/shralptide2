@@ -30,6 +30,6 @@
 	<key>WKApplication</key>
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>com.shralpsoftware.ShralpTide2</string>
+	<string>tl.jake.tide.ShralpTide2</string>
 </dict>
 </plist>

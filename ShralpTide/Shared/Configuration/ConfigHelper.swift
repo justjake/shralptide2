@@ -10,10 +10,10 @@ enum ConfigKeys {
 }
 
 class ConfigHelper: ObservableObject {
-    fileprivate let suiteName = "group.com.shralpsoftware.shared.config"
+    fileprivate let suiteName = "group.tl.jake.tide.shared.config"
 
     fileprivate let log = Logger(
-        subsystem: "com.shralpsoftware.ShralpTide2", category: "ConfigHelper"
+        subsystem: "tl.jake.tide.ShralpTide2", category: "ConfigHelper"
     )
 
     @Published var settings = UserSettings()
