@@ -13,6 +13,8 @@ import SwiftUI
 import Charts
 
 struct ChartView: View {
+    @State private var selectedDate: Date?
+
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
 
@@ -98,13 +100,81 @@ struct ChartView: View {
         )
         let idIntervals = intervalsForDay.map { WithID(value: $0) }
         
-        return Chart(idIntervals) { withId in
-            let tidePoint = withId.value
-            AreaMark(
-                x: .value("Time", tidePoint.time),
-                y: .value("Height", tidePoint.height))
-                .foregroundStyle(.linearGradient(.init(colors: [.IndigoFlowerGrey, .WhitePlumGrey]), startPoint: .top , endPoint: .bottom))
+        let max = Double(truncating: tideData.highestTide)
+        let sunriseDuration = 60 * 30
+        
+        return Chart {
+            Plot {
+                ForEach(getDaylightPairs()) { withId in
+                    let (rise, set) = withId.value
+                    AreaMark(x: .value("Time", rise), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
+                        .foregroundStyle(.pink)
+                    AreaMark(x: .value("Time", rise + 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
+                        .foregroundStyle(.pink)
+                    AreaMark(x: .value("Time", set), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
+                        .foregroundStyle(.pink)
+                    AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
+                        .foregroundStyle(.pink)
+                        .interpolationMethod(.monotone)
+//                    RectangleMark(xStart: .value("Time", rise), xEnd: .value("Time", set))
+//                        .foregroundStyle(Color(red: 0.04, green: 0.27, blue: 0.61))
+                }
+                
+            }
             
+            Plot {
+                ForEach(getMoonlightPairs()) { withId in
+                    let (rise, set) = withId.value
+                    RectangleMark(xStart: .value("Time", rise), xEnd: .value("Time", set))
+                        .foregroundStyle(Color(red: 1, green: 1, blue: 1).opacity(0.2))
+                }
+            }
+            
+
+            
+            Plot {
+                ForEach(idIntervals) { withId in
+                    let tidePoint = withId.value
+                    AreaMark(
+                        x: .value("Time", tidePoint.time),
+                        y: .value("Height", tidePoint.height))
+                    .foregroundStyle(
+                        .linearGradient(
+                            .init(
+                                colors: [.IndigoFlowerGrey.opacity(0.6), .WhitePlumGrey.opacity(0.6)]),
+                                startPoint: .top,
+                                endPoint: .bottom
+                        )
+                    )
+                }
+            }
+            
+            if let hoveredDate = selectedDate {
+                if let closest = intervalsForDay.sorted(by: { left, right in
+                    let leftDelta = left.time.distance(to: hoveredDate).magnitude
+                    let rightDelta = right.time.distance(to: hoveredDate).magnitude
+                    return leftDelta < rightDelta
+                }).first {
+                    RuleMark(x: .value("Time", closest.time))
+                        .foregroundStyle(.white.opacity(0.8))
+                    PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
+                        .foregroundStyle(.white)
+                }
+            }
+        }
+        .chartOverlay { proxy in
+            #if os(watchOS)
+            #else
+            Color.clear
+                .onContinuousHover { phase in
+                    switch phase {
+                    case let .active(location):
+                        selectedDate = proxy.value(atX: location.x, as: Date.self)
+                    case .ended:
+                        selectedDate = nil
+                    }
+                }
+            #endif
         }
         
         
@@ -158,6 +228,22 @@ struct ChartView: View {
         }
         .fill(Color(red: 1, green: 1, blue: 1).opacity(0.2))
     }
+    
+    private func getMoonlightPairs() -> [WithID<(Date, Date)>] {
+        let moonEvents: [SDTideEvent] = tideData.moonriseMoonsetEvents
+        let moonPairs: [(Date, Date)] = pairRiseAndSetEvents(
+            moonEvents, riseEventType: .moonrise, setEventType: .moonset
+        )
+        return moonPairs.map { WithID(value: $0) }
+    }
+    
+    private func getDaylightPairs() -> [WithID<(Date, Date)>] {
+        let sunEvents: [SDTideEvent] = tideData.sunriseSunsetEvents
+        let sunPairs: [(Date, Date)] = pairRiseAndSetEvents(
+            sunEvents, riseEventType: .sunrise, setEventType: .sunset
+        )
+        return sunPairs.map { WithID(value: $0) }
+    }
 
     private func drawDaylight(_ baseSeconds: TimeInterval, _ xratio: CGFloat, _ height: CGFloat)
         -> some View
@@ -205,9 +291,9 @@ struct ChartView: View {
 
             Rectangle()
                 .fill(Color.black)
-            drawDaylight(baseSeconds, dim.xratio, dim.height)
-            drawMoonlight(baseSeconds, dim.xratio, dim.height)
-            drawTideLevel(baseSeconds, dim.xratio, dim.yoffset, dim.yratio, dim.height)
+//            drawDaylight(baseSeconds, dim.xratio, dim.height)
+//            drawMoonlight(baseSeconds, dim.xratio, dim.height)
+            drawTideLevelAsChart(baseSeconds, dim.xratio, dim.yoffset, dim.yratio, dim.height)
             if showZero && dim.height >= dim.yoffset {
                 drawBaseline(dim)
             }
