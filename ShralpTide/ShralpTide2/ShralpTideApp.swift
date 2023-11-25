@@ -7,7 +7,9 @@
 
 import Foundation
 import SwiftUI
+#if canImport(WidgetKit)
 import WidgetKit
+#endif
 
 @main
 struct ShralpTideApp: App {
@@ -55,7 +57,7 @@ struct ShralpTideApp: App {
             return AnyView(PadContentView())
         }
     }
-    
+
     private func setLocation(_ url: URL) {
         if url.scheme != "shralp" {
             return

@@ -1,6 +1,8 @@
 import Foundation
 import os
+#if canImport(WidgetKit)
 import WidgetKit
+#endif
 
 enum ConfigKeys {
     fileprivate static let units = "units_preference"
@@ -22,12 +24,12 @@ class ConfigHelper: ObservableObject {
 
     init() {
         do {
-            try setupByPreferences()
+            try self.setupByPreferences()
         } catch {
             fatalError("Unable to read preferences \(error)")
         }
         NotificationCenter.default.addObserver(
-            self, selector: #selector(setupByPreferences), name: UserDefaults.didChangeNotification,
+            self, selector: #selector(self.setupByPreferences), name: UserDefaults.didChangeNotification,
             object: nil
         )
     }
@@ -50,7 +52,8 @@ class ConfigHelper: ObservableObject {
         let settingsPlist = try PropertyListSerialization.propertyList(
             from: settingsData,
             options: [],
-            format: nil) as! NSDictionary
+            format: nil
+        ) as! NSDictionary
         return settingsPlist
     }
 
@@ -61,18 +64,18 @@ class ConfigHelper: ObservableObject {
         let groupDefaults = UserDefaults(suiteName: suiteName)!
         let groupTestValue = groupDefaults.integer(forKey: ConfigKeys.days)
         if groupTestValue == 0 {
-            log.info("Migrating existing settings...")
+            self.log.info("Migrating existing settings...")
             groupDefaults.register(defaults: UserDefaults.standard.dictionaryRepresentation())
         }
     }
 
     @objc func setupByPreferences() throws {
-        migrateUserDefaults()
+        self.migrateUserDefaults()
         let groupDefaults = UserDefaults(suiteName: suiteName)!
         let testValue = groupDefaults.string(forKey: ConfigKeys.units)
         if testValue == nil {
-            settingsDict = try readSettingsDictionary()
-            let prefSpecifierArray = settingsDict["PreferenceSpecifiers"] as! [NSDictionary]
+            self.settingsDict = try self.readSettingsDictionary()
+            let prefSpecifierArray = self.settingsDict["PreferenceSpecifiers"] as! [NSDictionary]
 
             var defaultsToRegister = [String: Any]()
 
@@ -99,7 +102,10 @@ class ConfigHelper: ObservableObject {
         self.log.info("Setting currentsPref to \(self.settings.showsCurrentsPref ? "YES" : "NO")")
         self.log.info("Setting units to \(self.settings.unitsPref)")
         self.log.info("Setting legacyMode to \(self.settings.legacyMode ? "YES" : "NO")")
+
+#if canImport(WidgetKit)
         // and refresh widgets
         WidgetCenter.shared.reloadAllTimelines()
+#endif
     }
 }

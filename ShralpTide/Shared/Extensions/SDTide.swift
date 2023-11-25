@@ -6,10 +6,10 @@
 //
 
 import Foundation
-#if os(iOS)
-    import ShralpTideFramework
-#elseif os(watchOS)
+#if os(watchOS)
     import WatchTideFramework
+#else
+    import ShralpTideFramework
 #endif
 
 extension SDTide {
@@ -28,17 +28,17 @@ extension SDTide {
         }
     }
 #else
-extension SDTide {
-    func hoursToPlot() -> Int {
-        guard startTime == nil else {
-            let diffComponents = Calendar.current.dateComponents(
-                [.hour], from: startTime, to: stopTime
-            )
-            return diffComponents.hour!
+    extension SDTide {
+        func hoursToPlot() -> Int {
+            guard startTime == nil else {
+                let diffComponents = Calendar.current.dateComponents(
+                    [.hour], from: startTime, to: stopTime
+                )
+                return diffComponents.hour!
+            }
+            return 0
         }
-        return 0
     }
-}
 #endif
 
 enum TideError: Error {

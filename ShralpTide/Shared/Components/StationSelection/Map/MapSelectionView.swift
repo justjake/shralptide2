@@ -50,7 +50,12 @@ struct MapSelectionView: View {
                         }
                     )
                     .toolbar {
-                        ToolbarItemGroup(placement: config.settings.showsCurrentsPref ? .bottomBar : .automatic) {
+#if os(tvOS)
+                        let placement = ToolbarItemPlacement.automatic
+#else
+                        let placement: ToolbarItemPlacement = config.settings.showsCurrentsPref ? .bottomBar : .automatic
+#endif
+                        ToolbarItemGroup(placement: placement) {
                             if config.settings.showsCurrentsPref {
                                 Picker("", selection: $currentPickerSelection) {
                                     Text("Tides").tag(StationType.tides)

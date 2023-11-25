@@ -18,6 +18,9 @@ struct PhoneContentView: View {
     @GestureState private var translation: CGFloat = 0
 
     var body: some View {
+        #if os(tvOS)
+        return EmptyView()
+        #else
         return GeometryReader { proxy in
             Rectangle()
                 .background(Color("background-color"))
@@ -95,5 +98,6 @@ struct PhoneContentView: View {
         }
         .statusBar(hidden: false)
         .accentColor(.white)
+        #endif
     }
 }

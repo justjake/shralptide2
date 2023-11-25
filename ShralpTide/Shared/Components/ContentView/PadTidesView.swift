@@ -15,19 +15,22 @@ struct PadTidesView: View {
 
     @Binding var pageIndex: Int
     @Binding var selectedTideDay: SingleDayTideModel?
-  
+
     lazy var formatter: DateFormatter = {
         let f = DateFormatter()
         f.dateStyle = .full
         return f
     }()
-    
+
     private func nonMutatingFormatter() -> DateFormatter {
         var mutableSelf = self
         return mutableSelf.formatter
     }
 
     var body: some View {
+        #if os(tvOS)
+        let dragGesture = LongPressGesture()
+        #else
         let dragGesture = DragGesture(minimumDistance: 0)
             .onChanged {
                 self.cursorLocation = $0.location
@@ -35,6 +38,7 @@ struct PadTidesView: View {
             .onEnded { _ in
                 self.cursorLocation = .zero
             }
+        #endif
 
         let pressGesture = LongPressGesture(minimumDuration: 0.2)
 
@@ -58,12 +62,12 @@ struct PadTidesView: View {
                             .padding(.leading)
                             .padding(.trailing)
                         if let tideData = appState.tidesForDays[safe: pageIndex] {
-                          Text(tideData.startTime != nil ? nonMutatingFormatter().string(from: tideData.startTime) : "")
-                            .font(.title)
-                            .lineLimit(1)
-                            .padding(.leading)
-                            .padding(.trailing)
-                            .minimumScaleFactor(0.2)
+                            Text(tideData.startTime != nil ? nonMutatingFormatter().string(from: tideData.startTime) : "")
+                                .font(.title)
+                                .lineLimit(1)
+                                .padding(.leading)
+                                .padding(.trailing)
+                                .minimumScaleFactor(0.2)
                             if tideData.events != nil {
                                 TideEventsView(tide: tideData)
                                     .padding()

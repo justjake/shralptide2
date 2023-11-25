@@ -104,16 +104,19 @@ struct MonthView: View {
         .onReceive(appState.config.$settings) { newValue in
             let oldValue = appState.config.settings
             if oldValue.legacyMode == newValue.legacyMode &&
-                oldValue.unitsPref == newValue.unitsPref {
+                oldValue.unitsPref == newValue.unitsPref
+            {
                 return // no change we care about
             }
             backgroundRefreshTides()
         }
+        #if !os(tvOS)
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification))
         { _ in
             // state update to force redraw the scrollview
             appState.locationPage = appState.locationPage
         }
+        #endif
         .onAppear {
             appState.calendarTides = appStateInteractor.calculateCalendarTides(
                 appState: appState, settings: config.settings, month: displayMonth, year: displayYear
@@ -151,9 +154,9 @@ struct MonthView: View {
                             $0.day == Date().startOfDay()
                         }
                     } else if displayMonth == Calendar.current.component(.month, from: selectedTideModel!.day) {
-                         selectedTideModel = tides.first {
-                             $0.tideDataToChart.startTime == selectedTideModel?.tideDataToChart.startTime
-                         }
+                        selectedTideModel = tides.first {
+                            $0.tideDataToChart.startTime == selectedTideModel?.tideDataToChart.startTime
+                        }
                     }
                 } else if displayMonth == Calendar.current.component(.month, from: selectedTideModel!.day) {
                     selectedTideModel = tides.first {

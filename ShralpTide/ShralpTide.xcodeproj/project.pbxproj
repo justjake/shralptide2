@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -75,7 +75,7 @@
 		DC25E6D22636870900D214D0 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25E6D12636870900D214D0 /* ExtensionDelegate.swift */; };
 		DC25E6DA2636870900D214D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC25E6D92636870900D214D0 /* Assets.xcassets */; };
 		DC25E6DD2636870900D214D0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC25E6DC2636870900D214D0 /* Preview Assets.xcassets */; };
-		DC25E6E22636870900D214D0 /* WatchTides.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DC25E6BC2636870800D214D0 /* WatchTides.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DC25E6E22636870900D214D0 /* WatchTides.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DC25E6BC2636870800D214D0 /* WatchTides.app */; platformFilters = (ios, maccatalyst, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DC25E6FB26373D0E00D214D0 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25E6FA26373D0E00D214D0 /* WatchSessionManager.swift */; };
 		DC26BB0424BB807B00453A5F /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC26BB0324BB807B00453A5F /* Tests_iOS.swift */; };
 		DC26BB0F24BB807B00453A5F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC26BB0E24BB807B00453A5F /* Tests_macOS.swift */; };
@@ -113,7 +113,7 @@
 		DCC85C73267C2916007E0C0B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCC85C72267C2916007E0C0B /* Assets.xcassets */; };
 		DCC85C75267C2916007E0C0B /* TideWidgetExtension.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = DCC85C71267C2915007E0C0B /* TideWidgetExtension.intentdefinition */; };
 		DCC85C76267C2916007E0C0B /* TideWidgetExtension.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = DCC85C71267C2915007E0C0B /* TideWidgetExtension.intentdefinition */; };
-		DCC85C79267C2916007E0C0B /* TideWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCC85C69267C2915007E0C0B /* TideWidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DCC85C79267C2916007E0C0B /* TideWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCC85C69267C2915007E0C0B /* TideWidgetExtension.appex */; platformFilters = (ios, maccatalyst, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DCD524312607F6D900EA4C68 /* PadContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD524302607F6D900EA4C68 /* PadContentView.swift */; };
 		DCD7C96826507C09006327D2 /* Array+RawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD7C96726507C09006327D2 /* Array+RawRepresentable.swift */; };
 		DCE3305F26A0DCBE007A6E9E /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE3305E26A0DCBE007A6E9E /* UserSettings.swift */; };
@@ -121,7 +121,7 @@
 		DCE3306326A1F6BA007A6E9E /* ConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25E70626373D7D00D214D0 /* ConfigHelper.swift */; };
 		DCEA8FEC2693AF9800B8A6C7 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCEA8FEB2693AF9800B8A6C7 /* Intents.framework */; };
 		DCEA8FEF2693AF9800B8A6C7 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA8FEE2693AF9800B8A6C7 /* IntentHandler.swift */; };
-		DCEA8FF32693AF9800B8A6C7 /* LocationIntentsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCEA8FEA2693AF9800B8A6C7 /* LocationIntentsExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DCEA8FF32693AF9800B8A6C7 /* LocationIntentsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCEA8FEA2693AF9800B8A6C7 /* LocationIntentsExtension.appex */; platformFilters = (ios, maccatalyst, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DCEA8FF72693B1AC00B8A6C7 /* TideWidgetExtension.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = DCC85C71267C2915007E0C0B /* TideWidgetExtension.intentdefinition */; };
 		DCEA8FF82693B57100B8A6C7 /* AppStateRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE7C22593B2E400FD75A0 /* AppStateRepository.swift */; };
 		DCEA8FF92693B57C00B8A6C7 /* LegacyStationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE7C32593B2E400FD75A0 /* LegacyStationData.swift */; };
@@ -1196,7 +1196,10 @@
 		};
 		DC25E6E12636870900D214D0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
+			platformFilters = (
+				ios,
+				maccatalyst,
+			);
 			target = DC25E6BB2636870800D214D0 /* WatchTides */;
 			targetProxy = DC25E6E02636870900D214D0 /* PBXContainerItemProxy */;
 		};
@@ -1207,13 +1210,19 @@
 		};
 		DCC85C78267C2916007E0C0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
+			platformFilters = (
+				ios,
+				maccatalyst,
+			);
 			target = DCC85C68267C2915007E0C0B /* TideWidgetExtension */;
 			targetProxy = DCC85C77267C2916007E0C0B /* PBXContainerItemProxy */;
 		};
 		DCEA8FF22693AF9800B8A6C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilter = ios;
+			platformFilters = (
+				ios,
+				maccatalyst,
+			);
 			target = DCEA8FE92693AF9800B8A6C7 /* LocationIntentsExtension */;
 			targetProxy = DCEA8FF12693AF9800B8A6C7 /* PBXContainerItemProxy */;
 		};
@@ -1455,11 +1464,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2;
 				PRODUCT_NAME = ShralpTide;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -1494,11 +1503,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tl.jake.tide.ShralpTide2;
 				PRODUCT_NAME = ShralpTide;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1617,6 +1626,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1645,6 +1655,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

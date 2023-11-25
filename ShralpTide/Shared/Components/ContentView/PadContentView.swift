@@ -12,7 +12,7 @@ struct PadContentView: View {
 
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var config: ConfigHelper
-    
+
     @State private var isPopoverShowing = false
     @State private var showingFavorites = false
 
@@ -31,11 +31,13 @@ struct PadContentView: View {
                     Text("Location")
                         .padding()
                 }
+                #if !os(tvOS)
                 .popover(isPresented: $isPopoverShowing) {
                     FavoritesListView(isShowing: $isPopoverShowing)
                         .environmentObject(self.appState)
                         .environmentObject(self.config)
                 }
+                #endif
                 Text(
                     appState.tides.count > 0 ? appState.tides[appState.locationPage].shortLocationName : ""
                 )

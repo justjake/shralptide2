@@ -7,10 +7,10 @@
 //
 
 import Foundation
-#if os(iOS)
-    import ShralpTideFramework
-#elseif os(watchOS)
+#if os(watchOS)
     import WatchTideFramework
+#else
+    import ShralpTideFramework
 #endif
 
 extension String {
