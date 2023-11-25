@@ -40,7 +40,7 @@ class AppStateRepository {
                 if availableLocations?.count ?? 0 > 0 {
                     if persistentState?.selectedLocation?.datastoreName == datastoreName(isLegacy) {
                         locationPage =
-                            ((availableLocations?.index(of: persistentState?.selectedLocation as Any))!)
+                            (availableLocations?.index(of: persistentState?.selectedLocation as Any))!
                     } else {
                         // since the selected location is not from the active datastore, use the first
                         // available location that is.
@@ -135,7 +135,7 @@ class AppStateRepository {
                 } else {
                     try setDefaultLocation(isLegacy: isLegacy)
                 }
-                
+
                 saveContext()
             }
         }
@@ -161,9 +161,16 @@ class AppStateRepository {
     }()
 
     lazy var newUrl: URL = {
+        #if os(tvOS)
+        // tvOS doesn't support writing files outside of caches directory or iCloud
+        let urls = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
+        let cacheUrl = (urls[urls.count - 1] as NSURL) as URL
+        return cacheUrl.appendingPathComponent("datastore2.sqlite")
+        #else
         let directory = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: "group.tl.jake.tide.shared.config")!
         return directory.appendingPathComponent("datastore.sqlite")
+        #endif
     }()
 
     lazy var managedObjectModel: NSManagedObjectModel = {

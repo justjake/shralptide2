@@ -50,11 +50,14 @@ struct ShralpTideApp: App {
         }
     }
 
-    private func contentView() -> some View {
-        if idiom == .phone {
-            return AnyView(PhoneContentView())
-        } else {
-            return AnyView(PadContentView())
+    @ViewBuilder private func contentView() -> some View {
+        switch idiom {
+        case .phone:
+            PhoneContentView()
+        case .tv:
+            TVContentView()
+        default:
+            PadContentView()
         }
     }
 

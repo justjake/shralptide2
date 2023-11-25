@@ -21,12 +21,14 @@ struct ChartView: View {
     private var showZero: Bool
     private var tideData: SDTide
     private var percentHeight: CGFloat
+    private var background: Color
 
-    init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8) {
+    init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black) {
         tideData = tide
         dateFormatter.dateStyle = .full
         self.showZero = showZero
         self.percentHeight = percentHeight
+        self.background = background
     }
 
     private func pairRiseAndSetEvents(
@@ -221,8 +223,7 @@ struct ChartView: View {
 
     @ChartContentBuilder private func getNowMark(_ now: Date, closest: SDTideInterval?) -> some ChartContent {
         RectangleMark(xStart: .value("", tideData.startTime), xEnd: .value("", now))
-            .foregroundStyle(.thickMaterial)
-            .opacity(0.2)
+            .foregroundStyle(.gray.opacity(0.3))
             .accessibilityHidden(true)
         RuleMark(x: .value("Now", now))
             .foregroundStyle(.gray.opacity(0.8))
@@ -390,7 +391,7 @@ struct ChartView: View {
             let baseSeconds: TimeInterval = day.timeIntervalSince1970
 
             Rectangle()
-                .fill(Color.black)
+                .fill(background)
 //            drawDaylight(baseSeconds, dim.xratio, dim.height)
 //            drawMoonlight(baseSeconds, dim.xratio, dim.height)
             drawTideLevelAsChart(baseSeconds, dim)

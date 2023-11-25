@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C16DDFA92B127C4700626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
+		C16DDFAA2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
+		C16DDFAB2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C1E8CCCE2B10309800393AA8 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCD2B10309800393AA8 /* Collection.swift */; };
 		C1E8CCD02B10602400393AA8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCF2B10602400393AA8 /* Color.swift */; };
 		C1E8CCD12B10602400393AA8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E8CCCF2B10602400393AA8 /* Color.swift */; };
@@ -254,6 +257,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C16DDFA82B127BB700626BBD /* TVContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVContentView.swift; sourceTree = "<group>"; };
 		C1E8CCCD2B10309800393AA8 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		C1E8CCCF2B10602400393AA8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		DC079F73259BAED800F1CB0E /* InteractiveChartViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveChartViewModifier.swift; sourceTree = "<group>"; };
@@ -767,6 +771,7 @@
 			children = (
 				DC26BAE924BB807900453A5F /* PhoneContentView.swift */,
 				DCD524302607F6D900EA4C68 /* PadContentView.swift */,
+				C16DDFA82B127BB700626BBD /* TVContentView.swift */,
 				DC246B62262203E70090F38B /* PadTidesView.swift */,
 			);
 			path = ContentView;
@@ -1060,6 +1065,7 @@
 				DC115E2525B521F400954972 /* StationDataRepository.swift in Sources */,
 				DC115DE425AD56B200954972 /* FavoritesListView.swift in Sources */,
 				DCF96C1225BE492700255096 /* MapSelectionView.swift in Sources */,
+				C16DDFA92B127C4700626BBD /* TVContentView.swift in Sources */,
 				DC115DF825B26CE800954972 /* StationMapView.swift in Sources */,
 				DC0DE8162593B87C00FD75A0 /* AppStateInteractor.swift in Sources */,
 				DC115DB825A576CA00954972 /* TideGraphView.swift in Sources */,
@@ -1114,6 +1120,7 @@
 				DC26BB0424BB807B00453A5F /* Tests_iOS.swift in Sources */,
 				DC246ADE2615712D0090F38B /* MonthView.swift in Sources */,
 				DC246B1A26214ED20090F38B /* LocationDateViewModifier.swift in Sources */,
+				C16DDFAA2B127C4800626BBD /* TVContentView.swift in Sources */,
 				DC246AF1261A6A630090F38B /* SingleDayTideModel.swift in Sources */,
 				DC246AE9261A642D0090F38B /* CalendarAppStateInteractor.swift in Sources */,
 				DC246B04261A73780090F38B /* CalendarDayView.swift in Sources */,
@@ -1129,6 +1136,7 @@
 				DC26BB0F24BB807B00453A5F /* Tests_macOS.swift in Sources */,
 				DC246ADF2615712D0090F38B /* MonthView.swift in Sources */,
 				DC246B1B26214ED20090F38B /* LocationDateViewModifier.swift in Sources */,
+				C16DDFAB2B127C4800626BBD /* TVContentView.swift in Sources */,
 				DC246AF2261A6A630090F38B /* SingleDayTideModel.swift in Sources */,
 				DC246AEA261A642D0090F38B /* CalendarAppStateInteractor.swift in Sources */,
 				DC246B05261A73780090F38B /* CalendarDayView.swift in Sources */,
