@@ -235,6 +235,25 @@ struct ChartView: View {
         PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
             .symbol { thumb() }
             .foregroundStyle(.white)
+            .annotation(position: .topTrailing) {
+                VStack(alignment: .leading) {
+                    Text("\(closest.time.formatted(date: .omitted, time: .shortened))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .bold()
+                        .fontDesign(.rounded)
+                        .padding(.init(top: 4, leading: 6, bottom: 0, trailing: 4))
+                    Text(Measurement(value: Double(closest.height), unit: UnitLength.feet).formatted())
+                        .font(.headline)
+                        .bold()
+                        .fontDesign(.rounded)
+                        .padding(.init(top: 0, leading: 6, bottom: 4, trailing: 4))
+                }.foregroundStyle(.white)
+                    .background(.thinMaterial)
+                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 4, height: 4)))
+                    .padding(.init(top: 4, leading: 6, bottom: 0, trailing: 6))
+                    .monospacedDigit()
+            }
     }
 
     private func getMoonlightMarks() -> some ChartContent {
