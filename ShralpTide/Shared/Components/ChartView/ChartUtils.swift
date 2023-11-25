@@ -24,16 +24,16 @@ internal func imageForEvent(_ event: SDTideEvent) -> some View {
             .mask(Image(systemName: "moon.fill"))
     case .moonset:
         return Color.white
-                .mask(Image(systemName: "moon.haze"))
+            .mask(Image(systemName: "moon.haze"))
     case .sunrise:
         return Color.yellow
             .mask(Image(systemName: "sunrise.fill"))
     case .sunset:
         return Color.orange
-            .mask(Image(systemName: "sunset"))
+            .mask(Image(systemName: "sunset.fill"))
     default:
         return Color.yellow
-            .mask(Image(systemName: "sunset"))
+            .mask(Image(systemName: "sunset.fill"))
     }
 }
 
@@ -49,10 +49,10 @@ internal func calculateDimensions(_ proxy: GeometryProxy, tideData: SDTide, perc
     let min: CGFloat = findLowestTideValue(tideData)
     let max: CGFloat = findHighestTideValue(tideData)
 
-    let ymin: CGFloat = CGFloat.minimum(min - 1, -0.5)
+    let ymin = CGFloat.minimum(min - 1, -0.5)
     let ymax: CGFloat = max + 1
 
-    let xmin: Int = 0
+    let xmin = 0
     let xmax: Int = ChartConstants.minutesPerHour * tideData.hoursToPlot()
 
     let yratio = CGFloat(height) / (ymax - ymin)

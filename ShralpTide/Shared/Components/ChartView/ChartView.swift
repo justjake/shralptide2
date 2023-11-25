@@ -9,8 +9,8 @@
 #else
     import ShralpTideFramework
 #endif
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct ChartView: View {
     @State private var selectedDate: Date?
@@ -90,8 +90,7 @@ struct ChartView: View {
         // fill in the tide level curve
         return path.fill(.linearGradient(.init(colors: [.IndigoFlowerGrey, .WhitePlumGrey]), startPoint: .top, endPoint: .bottom))
     }
-    
-    
+
     private func drawTideLevelAsChart(
         _ baseSeconds: TimeInterval, _ dim: ChartDimensions
     ) -> some View {
@@ -99,99 +98,165 @@ struct ChartView: View {
             from: Date(timeIntervalSince1970: baseSeconds), forHours: tideData.hoursToPlot()
         )
         let idIntervals = intervalsForDay.map { WithID(value: $0) }
-        
-        let max = Double(truncating: tideData.highestTide)
-        
+
+        func closest(to: Date) -> SDTideInterval? {
+            intervalsForDay.sorted(by: { left, right in
+                let leftDelta = left.time.distance(to: to).magnitude
+                let rightDelta = right.time.distance(to: to).magnitude
+                return leftDelta < rightDelta
+            }).first
+        }
+
         return Chart {
             getMoonlightMarks()
             getSunlightMarks()
-            
+
             Plot {
                 ForEach(idIntervals) { withId in
                     let tidePoint = withId.value
-                    LineMark(
-                        x: .value("Time", tidePoint.time),
-                        y: .value("Height", tidePoint.height))
-                    .foregroundStyle(
-                        Color.IndigoFlowerGrey
-                    )
-                    .lineStyle(.init(lineWidth: 6, lineCap: .round))
-                    .interpolationMethod(.catmullRom)
-                        
+
+                    // Visual style only - draw the gradient below the line
                     AreaMark(
                         x: .value("Time", tidePoint.time),
-                        y: .value("Height", tidePoint.height))
+                        y: .value("Height", tidePoint.height)
+                    )
                     .foregroundStyle(
                         .linearGradient(
                             .init(
-                                colors: [.IndigoFlowerGrey.opacity(0.8), .WhitePlumGrey.opacity(0.1)]),
-                                startPoint: .top,
-                                endPoint: .bottom
+                                colors: [.IndigoFlowerGrey.opacity(0.8), .WhitePlumGrey.opacity(0.4)]),
+                            startPoint: .top,
+                            endPoint: .bottom
                         )
                     )
                     .interpolationMethod(.catmullRom)
+                    .alignsMarkStylesWithPlotArea()
+                    .accessibilityHidden(true) // This is visual only and repeats the line below.
+
+                    LineMark(
+                        x: .value("Time", tidePoint.time),
+                        y: .value("Height", tidePoint.height)
+                    )
+                    .foregroundStyle(
+                        .linearGradient(
+                            .init(
+                                colors: [.IndigoFlowerGrey, .WhitePlumGrey]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .alignsMarkStylesWithPlotArea()
+                    .lineStyle(.init(lineWidth: 4, lineCap: .round))
+                    .interpolationMethod(.catmullRom)
                 }
             }
-            
+
+            getEventMarks()
+
+            // If today, show now line & cover "past" with grey.
+            let now = Date()
+            if now.startOfDay() == tideData.startTime {
+                getNowMark(now, closest: closest(to: now))
+            }
+
             // If hovered / dragged, render the thumb.
             if let hoveredDate = selectedDate {
-                if let closest = intervalsForDay.sorted(by: { left, right in
-                    let leftDelta = left.time.distance(to: hoveredDate).magnitude
-                    let rightDelta = right.time.distance(to: hoveredDate).magnitude
-                    return leftDelta < rightDelta
-                }).first {
-                    RuleMark(x: .value("Time", closest.time))
-                        .foregroundStyle(.white.opacity(0.8))
-                    PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
-                        .symbol { thumb() }
-                        .foregroundStyle(.white)
+                if let interval = closest(to: hoveredDate) {
+                    getHoveredMark(interval)
                 }
             }
         }
         .chartOverlay { proxy in
             #if os(watchOS)
             #else
-            Color.clear
-                .onContinuousHover { phase in
-                    switch phase {
-                    case let .active(location):
-                        selectedDate = proxy.value(atX: location.x, as: Date.self)
-                    case .ended:
-                        selectedDate = nil
+                Color.clear
+                    .onContinuousHover { phase in
+                        switch phase {
+                        case let .active(location):
+                            selectedDate = proxy.value(atX: location.x, as: Date.self)
+                        case .ended:
+                            selectedDate = nil
+                        }
                     }
-                }
             #endif
         }
-        .chartYScale(domain: Float(dim.ymin)...Float(dim.ymax))
+        .chartYScale(domain: Float(dim.ymin) ... Float(dim.ymax))
     }
-    
+
     private func thumb() -> some View {
         return Circle()
             .fill(.white)
-            .stroke(.black, lineWidth: 1.0)
+            .stroke(.black, lineWidth: 2.0)
             .frame(width: 20)
     }
-    
+
+    @ChartContentBuilder private func bolded(_ mark: PointMark) -> some ChartContent {
+        mark
+            .symbol {
+                Circle()
+                    .stroke(.black, lineWidth: 4)
+                    .frame(width: 8)
+            }
+    }
+
+    @ChartContentBuilder private func getEventMarks() -> some ChartContent {
+        let events: [SDTideEvent] = tideData.events
+        let eventsWithIds = events.map { WithID(value: $0) }
+        Plot {
+            ForEach(eventsWithIds) { event2 in
+                let event = event2.value
+                let mark = bolded(PointMark(x: .value("Time", event.eventTime), y: .value("Height", event.eventHeight)))
+                switch event.eventType {
+                case .min:
+                    mark.annotation(content: { Text("L") })
+                case .max:
+                    mark.annotation(content: { Text("H") })
+                default:
+                    Plot {}
+                }
+            }
+        }
+    }
+
+    @ChartContentBuilder private func getNowMark(_ now: Date, closest: SDTideInterval?) -> some ChartContent {
+        RectangleMark(xStart: .value("", tideData.startTime), xEnd: .value("", now))
+            .foregroundStyle(.thickMaterial)
+            .opacity(0.2)
+            .accessibilityHidden(true)
+        RuleMark(x: .value("Now", now))
+            .foregroundStyle(.gray.opacity(0.8))
+        if let interval = closest {
+            bolded(PointMark(x: .value("", now), y: .value("", interval.height)))
+        }
+    }
+
+    @ChartContentBuilder private func getHoveredMark(_ closest: SDTideInterval) -> some ChartContent {
+        RuleMark(x: .value("Time", closest.time))
+            .foregroundStyle(.white.opacity(0.8))
+        PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
+            .symbol { thumb() }
+            .foregroundStyle(.white)
+    }
+
     private func getMoonlightMarks() -> some ChartContent {
         let pairs = getMoonlightPairs()
         let max = Double(truncating: tideData.highestTide)
         return Plot {
             ForEach(pairs) { withId in
                 let (rise, set) = withId.value
-        
+
                 let before = rise - 60 * 15
                 let after = rise + 60 * 15
                 let before2 = set - 60 * 15
                 let after2 = set + 60 * 15
-                
+
                 if rise != tideData.startTime {
                     AreaMark(x: .value("Time", before), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
                         .foregroundStyle(.gray.opacity(0.2))
                         .interpolationMethod(.catmullRom)
                 }
                 AreaMark(x: .value("Time", after), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
-                        .foregroundStyle(.gray.opacity(0.2))
-                        .interpolationMethod(.catmullRom)
+                    .foregroundStyle(.gray.opacity(0.2))
+                    .interpolationMethod(.catmullRom)
                 AreaMark(x: .value("Time", before2), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
                 if set != tideData.stopTime {
                     AreaMark(x: .value("Time", after2), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
@@ -199,7 +264,7 @@ struct ChartView: View {
             }
         }
     }
-    
+
     private func getSunlightMarks() -> some ChartContent {
         let pairs = getDaylightPairs()
         let max = Double(truncating: tideData.highestTide)
@@ -212,8 +277,8 @@ struct ChartView: View {
                         .interpolationMethod(.catmullRom(alpha: 2))
                 }
                 AreaMark(x: .value("Time", rise + 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.yellow.opacity(0.3))
-                        .interpolationMethod(.catmullRom(alpha: 2))
+                    .foregroundStyle(.yellow.opacity(0.3))
+                    .interpolationMethod(.catmullRom(alpha: 2))
                 AreaMark(x: .value("Time", set - 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
                 if set != tideData.stopTime {
                     AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
@@ -245,7 +310,7 @@ struct ChartView: View {
         }
         .fill(Color(red: 1, green: 1, blue: 1).opacity(0.2))
     }
-    
+
     private func getMoonlightPairs() -> [WithID<(Date, Date)>] {
         let moonEvents: [SDTideEvent] = tideData.moonriseMoonsetEvents
         let moonPairs: [(Date, Date)] = pairRiseAndSetEvents(
@@ -253,7 +318,7 @@ struct ChartView: View {
         )
         return moonPairs.map { WithID(value: $0) }
     }
-    
+
     private func getDaylightPairs() -> [WithID<(Date, Date)>] {
         let sunEvents: [SDTideEvent] = tideData.sunriseSunsetEvents
         let sunPairs: [(Date, Date)] = pairRiseAndSetEvents(
@@ -311,14 +376,14 @@ struct ChartView: View {
 //            drawDaylight(baseSeconds, dim.xratio, dim.height)
 //            drawMoonlight(baseSeconds, dim.xratio, dim.height)
             drawTideLevelAsChart(baseSeconds, dim)
-            if showZero && dim.height >= dim.yoffset {
-                drawBaseline(dim)
-            }
+//            if showZero && dim.height >= dim.yoffset {
+//                drawBaseline(dim)
+//            }
         }
     }
 }
 
-struct WithID<T> : Identifiable {
+struct WithID<T>: Identifiable {
     let value: T
     let id = UUID()
 }
