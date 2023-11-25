@@ -118,7 +118,8 @@ struct ChartView: View {
                     // Visual style only - draw the gradient below the line
                     AreaMark(
                         x: .value("Time", tidePoint.time),
-                        y: .value("Height", tidePoint.height)
+                        yStart: .value("Height", tidePoint.height),
+                        yEnd: .value("", Float(dim.ymin))
                     )
                     .foregroundStyle(
                         .linearGradient(
