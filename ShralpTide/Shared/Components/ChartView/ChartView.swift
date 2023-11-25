@@ -181,6 +181,7 @@ struct ChartView: View {
             #endif
         }
         .chartYScale(domain: Float(dim.ymin) ... Float(dim.ymax))
+        .chartXScale(domain: tideData.startTime ... tideData.stopTime)
     }
 
     private func thumb() -> some View {
@@ -257,54 +258,51 @@ struct ChartView: View {
             }
     }
 
-    private func getMoonlightMarks() -> some ChartContent {
-        let pairs = getMoonlightPairs()
-        let max = Double(truncating: tideData.highestTide)
+    private func getAstralMarks<Y: Plottable>(
+        pairs: [WithID<(Date, Date)>],
+        foregroundStyle: some ShapeStyle,
+        y: PlottableValue<Y>,
+        fgSeries: String,
+        bgSeries: String
+    ) -> some ChartContent {
+        func base(_ series: LineMark) -> some ChartContent {
+            return series
+                .foregroundStyle(foregroundStyle)
+                .lineStyle(.init(lineWidth: 4, lineCap: .round))
+                .interpolationMethod(.catmullRom(alpha: 2))
+        }
+
         return Plot {
             ForEach(pairs) { withId in
+                let fg = PlottableValue.value("Astral Body", "\(fgSeries) \(withId)")
+                let bg = PlottableValue.value("Astral Body", "\(bgSeries) \(withId)")
+
                 let (rise, set) = withId.value
+                let riseAt = PlottableValue.value("Time", rise)
+                let setAt = PlottableValue.value("Time", set)
 
-                let before = rise - 60 * 15
-                let after = rise + 60 * 15
-                let before2 = set - 60 * 15
-                let after2 = set + 60 * 15
+                base(LineMark(x: riseAt, y: y, series: bg))
+                    .blur(radius: 4)
+                LineMark(x: setAt, y: y, series: bg)
 
-                if rise != tideData.startTime {
-                    AreaMark(x: .value("Time", before), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
-                        .foregroundStyle(.gray.opacity(0.2))
-                        .interpolationMethod(.catmullRom)
-                }
-                AreaMark(x: .value("Time", after), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
-                    .foregroundStyle(.gray.opacity(0.2))
-                    .interpolationMethod(.catmullRom)
-                AreaMark(x: .value("Time", before2), y: .value("Intensity", max), series: .value("Astral Body", "Moon"))
-                if set != tideData.stopTime {
-                    AreaMark(x: .value("Time", after2), y: .value("Intensity", 0), series: .value("Astral Body", "Moon"))
-                }
+                base(LineMark(x: riseAt, y: y, series: fg))
+                LineMark(x: setAt, y: y, series: fg)
             }
         }
     }
 
     private func getSunlightMarks() -> some ChartContent {
-        let pairs = getDaylightPairs()
         let max = Double(truncating: tideData.highestTide)
-        return Plot {
-            ForEach(pairs) { withId in
-                let (rise, set) = withId.value
-                if rise != tideData.startTime {
-                    AreaMark(x: .value("Time", rise - 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
-                        .foregroundStyle(.yellow.opacity(0.3))
-                        .interpolationMethod(.catmullRom(alpha: 2))
-                }
-                AreaMark(x: .value("Time", rise + 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
-                    .foregroundStyle(.yellow.opacity(0.3))
-                    .interpolationMethod(.catmullRom(alpha: 2))
-                AreaMark(x: .value("Time", set - 60 * 15), y: .value("Intensity", max), series: .value("Astral Body", "Sun"))
-                if set != tideData.stopTime {
-                    AreaMark(x: .value("Time", set + 60 * 15), y: .value("Intensity", 0), series: .value("Astral Body", "Sun"))
-                }
-            }
-        }
+        let gradient = LinearGradient(colors: [.yellow, .orange], startPoint: .leading, endPoint: .trailing)
+        let y = PlottableValue.value("Intensity", max + 0.5)
+        return getAstralMarks(pairs: getDaylightPairs(), foregroundStyle: gradient, y: y, fgSeries: "sun fg", bgSeries: "sun bg")
+    }
+
+    private func getMoonlightMarks() -> some ChartContent {
+        let max = Double(truncating: tideData.highestTide)
+        let gradient = LinearGradient(colors: [.white.opacity(0.8), .gray], startPoint: .leading, endPoint: .trailing)
+        let y = PlottableValue.value("Intensity", max + 0.25)
+        return getAstralMarks(pairs: getMoonlightPairs(), foregroundStyle: gradient, y: y, fgSeries: "moon fg", bgSeries: "moon bg")
     }
 
     private func drawMoonlight(_ baseSeconds: TimeInterval, _ xratio: CGFloat, _ height: CGFloat)
