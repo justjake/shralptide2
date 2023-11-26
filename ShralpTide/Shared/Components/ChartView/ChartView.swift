@@ -13,7 +13,9 @@ import Charts
 import SwiftUI
 
 struct ChartView: View {
-    @State private var selectedDate: Date?
+    @State private var selectedDateOther: Date?
+    @State private var prevSelectedButton: Int?
+    @FocusState private var selectedButton: Int?
 
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
@@ -23,12 +25,40 @@ struct ChartView: View {
     private var percentHeight: CGFloat
     private var background: Color
 
+    @FocusState private var chartIsFocused: Bool
+
     init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black) {
         tideData = tide
         dateFormatter.dateStyle = .full
         self.showZero = showZero
         self.percentHeight = percentHeight
         self.background = background
+    }
+
+    private var selectedDate: Date? {
+        if let normal = selectedDateOther {
+            return normal
+        }
+
+        if let percent = selectedButton {
+            let total = Double(tideData.allIntervals.count)
+            let ratio = Double(percent) / 100.0
+            let closest = Int(total * ratio)
+            if let interval = tideData.allIntervals[safe: closest] {
+                return interval.time
+            }
+        }
+
+        return nil
+    }
+
+    private var raisedButton: Int? {
+        if let prev = prevSelectedButton {
+            if selectedButton == nil {
+                return prev
+            }
+        }
+        return nil
     }
 
     private func pairRiseAndSetEvents(
@@ -168,22 +198,16 @@ struct ChartView: View {
                 }
             }
         }
-        .chartOverlay { proxy in
-            #if os(watchOS)
-            #else
-                Color.clear
-                    .onContinuousHover { phase in
-                        switch phase {
-                        case let .active(location):
-                            selectedDate = proxy.value(atX: location.x, as: Date.self)
-                        case .ended:
-                            selectedDate = nil
-                        }
-                    }
-            #endif
-        }
         .chartYScale(domain: Float(dim.ymin) ... Float(dim.ymax))
         .chartXScale(domain: tideData.startTime ... tideData.stopTime)
+        .chartXSelection(value: $selectedDateOther)
+        .chartOverlay { _ in
+            #if os(tvOS)
+                getFocusOverlay(idIntervals: idIntervals)
+            #endif
+        }.onChange(of: selectedButton) { prev, _ in
+            prevSelectedButton = prev
+        }
     }
 
     private func thumb() -> some View {
@@ -191,6 +215,21 @@ struct ChartView: View {
             .fill(.white)
             .stroke(.black, lineWidth: 2.0)
             .frame(width: 20)
+    }
+
+    private func getFocusOverlay(idIntervals: [WithID<SDTideInterval>]) -> some View {
+        return HStack(alignment: .center, spacing: 5) {
+            ForEach(0 ... 100, id: \.self) { num in
+                if raisedButton == nil || raisedButton == num {
+                    Text("\(num)")
+                        .focusable()
+                        .frame(width: 2, height: 2)
+                        .focused($selectedButton, equals: num)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .focusSection()
     }
 
     @ChartContentBuilder private func bolded(_ mark: PointMark) -> some ChartContent {
@@ -238,7 +277,7 @@ struct ChartView: View {
         PointMark(x: .value("Time", closest.time), y: .value("Height", closest.height))
             .symbol { thumb() }
             .foregroundStyle(.white)
-            .annotation(position: .topTrailing) {
+            .annotation(position: .topTrailing, overflowResolution: .init(x: .fit(to: .chart))) {
                 VStack(alignment: .leading) {
                     Text("\(closest.time.formatted(date: .omitted, time: .shortened))")
                         .font(.subheadline)

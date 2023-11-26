@@ -47,7 +47,7 @@ struct TVContentView: View {
                     Button(action: { goNext() }) {
                         Image(systemName: "arrow.right")
                     }
-                }
+                }.focusSection()
 
                 ChartView(tide: tideData, background: .clear)
             } else if calculating {
@@ -55,18 +55,6 @@ struct TVContentView: View {
                     Text("Reticulating splines...")
                 }
             }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigation, content: {
-                Button(action: { goPrev() }) {
-                    Image(systemName: "backward")
-                }
-            })
-            ToolbarItem(placement: .navigation, content: {
-                Button(action: { goNext() }) {
-                    Image(systemName: "forward")
-                }
-            })
         }
         .onAppear {
             isFirstLaunch = false

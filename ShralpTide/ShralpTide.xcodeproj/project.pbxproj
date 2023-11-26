@@ -78,7 +78,7 @@
 		DC25E6D22636870900D214D0 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25E6D12636870900D214D0 /* ExtensionDelegate.swift */; };
 		DC25E6DA2636870900D214D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC25E6D92636870900D214D0 /* Assets.xcassets */; };
 		DC25E6DD2636870900D214D0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC25E6DC2636870900D214D0 /* Preview Assets.xcassets */; };
-		DC25E6E22636870900D214D0 /* WatchTides.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DC25E6BC2636870800D214D0 /* WatchTides.app */; platformFilters = (ios, maccatalyst, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DC25E6E22636870900D214D0 /* WatchTides.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DC25E6BC2636870800D214D0 /* WatchTides.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DC25E6FB26373D0E00D214D0 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25E6FA26373D0E00D214D0 /* WatchSessionManager.swift */; };
 		DC26BB0424BB807B00453A5F /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC26BB0324BB807B00453A5F /* Tests_iOS.swift */; };
 		DC26BB0F24BB807B00453A5F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC26BB0E24BB807B00453A5F /* Tests_macOS.swift */; };
@@ -1204,10 +1204,7 @@
 		};
 		DC25E6E12636870900D214D0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-				maccatalyst,
-			);
+			platformFilter = ios;
 			target = DC25E6BB2636870800D214D0 /* WatchTides */;
 			targetProxy = DC25E6E02636870900D214D0 /* PBXContainerItemProxy */;
 		};
@@ -1267,7 +1264,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				INFOPLIST_FILE = WatchTides/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
@@ -1293,7 +1290,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				INFOPLIST_FILE = WatchTides/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
@@ -1367,7 +1364,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1429,7 +1426,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1527,7 +1524,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = H29T9V7X78;
 				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1549,7 +1546,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = H29T9V7X78;
 				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1619,10 +1616,10 @@
 				CODE_SIGN_ENTITLEMENTS = TideWidgetExtension/TideWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_FILE = TideWidgetExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1649,9 +1646,9 @@
 				CODE_SIGN_ENTITLEMENTS = TideWidgetExtension/TideWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				INFOPLIST_FILE = TideWidgetExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1677,10 +1674,10 @@
 				CODE_SIGN_ENTITLEMENTS = LocationIntentsExtension/LocationIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_FILE = LocationIntentsExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1703,9 +1700,9 @@
 				CODE_SIGN_ENTITLEMENTS = LocationIntentsExtension/LocationIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1982;
-				DEVELOPMENT_TEAM = H29T9V7X78;
+				DEVELOPMENT_TEAM = 24KB875A7B;
 				INFOPLIST_FILE = LocationIntentsExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
