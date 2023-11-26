@@ -13,9 +13,7 @@ import Charts
 import SwiftUI
 
 struct ChartView: View {
-    @State private var selectedDateOther: Date?
-    @State private var prevSelectedButton: Int?
-    @State private var selectedButton: Int?
+    @State private var selectedDate: Date?
     @FocusState private var chartIsFocused: Bool
 
     private let dateFormatter = DateFormatter()
@@ -34,30 +32,33 @@ struct ChartView: View {
         self.background = background
     }
 
-    private var selectedDate: Date? {
-        if let normal = selectedDateOther {
-            return normal
-        }
+    var body: some View {
+        return GeometryReader { proxy in
+            let dim = calculateDimensions(proxy, tideData: tideData, percentHeight: self.percentHeight)
 
-        if let percent = selectedButton {
-            let total = Double(tideData.allIntervals.count)
-            let ratio = Double(percent) / 100.0
-            let closest = Int(total * ratio)
-            if let interval = tideData.allIntervals[safe: closest] {
-                return interval.time
-            }
-        }
+            let day = tideData.startTime!
+            let baseSeconds: TimeInterval = day.timeIntervalSince1970
 
-        return nil
+            Rectangle().fill(background)
+            drawTideLevelAsChart(baseSeconds, dim)
+        }
     }
 
-    private var raisedButton: Int? {
-        if let prev = prevSelectedButton {
-            if selectedButton == nil {
-                return prev
-            }
+    var isToday: Bool {
+        Date().startOfDay() == tideData.startTime
+    }
+
+    var swipeDelta: TimeInterval {
+        let total = tideData.startTime.distance(to: tideData.stopTime)
+        return total / 100
+    }
+
+    var defaultFocusedDate: Date {
+        if isToday {
+            Date()
+        } else {
+            tideData.startTime.midday()
         }
-        return nil
     }
 
     private func pairRiseAndSetEvents(
@@ -87,39 +88,6 @@ struct ChartView: View {
         }
         let immutablePairs = pairs
         return immutablePairs
-    }
-
-    private func drawTideLevel(
-        _ baseSeconds: TimeInterval, _ xratio: CGFloat, _ yoffset: CGFloat, _ yratio: CGFloat,
-        _ height: CGFloat
-    ) -> some View {
-        let intervalsForDay: [SDTideInterval] = tideData.intervals(
-            from: Date(timeIntervalSince1970: baseSeconds), forHours: tideData.hoursToPlot()
-        )
-        var path = Path { tidePath in
-            for tidePoint: SDTideInterval in intervalsForDay {
-                let minute =
-                    Int(tidePoint.time.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
-                let point = CGPoint(
-                    x: CGFloat(minute) * xratio, y: yoffset - CGFloat(tidePoint.height) * yratio
-                )
-                if minute == 0 {
-                    tidePath.move(to: point)
-                } else {
-                    tidePath.addLine(to: point)
-                }
-            }
-        }
-
-        // closes the path so it can be filled
-        let lastMinute =
-            Int(intervalsForDay.last!.time.timeIntervalSince1970 - baseSeconds)
-                / ChartConstants.secondsPerMinute
-        path.addLine(to: CGPoint(x: CGFloat(lastMinute) * xratio, y: height))
-        path.addLine(to: CGPoint(x: 0, y: height))
-
-        // fill in the tide level curve
-        return path.fill(.linearGradient(.init(colors: [.IndigoFlowerGrey, .WhitePlumGrey]), startPoint: .top, endPoint: .bottom))
     }
 
     private func drawTideLevelAsChart(
@@ -186,20 +154,27 @@ struct ChartView: View {
 
             // If today, show now line & cover "past" with grey.
             let now = Date()
-            if now.startOfDay() == tideData.startTime {
+            if isToday {
                 getNowMark(now, closest: closest(to: now))
             }
 
             // If hovered / dragged, render the thumb.
+
             if let hoveredDate = selectedDate {
                 if let interval = closest(to: hoveredDate) {
-                    getHoveredMark(interval)
+                    #if os(tvOS)
+                        if chartIsFocused {
+                            getHoveredMark(interval)
+                        }
+                    #else
+                        getHoveredMark(interval)
+                    #endif
                 }
             }
         }
         .chartYScale(domain: Float(dim.ymin) ... Float(dim.ymax))
         .chartXScale(domain: tideData.startTime ... tideData.stopTime)
-        .chartXSelection(value: $selectedDateOther)
+        .chartXSelection(value: $selectedDate)
         .chartYAxis {
             getYAxisMarks()
         }
@@ -207,41 +182,31 @@ struct ChartView: View {
             getXAxisMarks()
         }
         .onSwipeGesture(swipe: { onSwipe($0) }, pan: { onPan($0, dim: dim) })
-        .onChange(of: selectedButton) { prev, _ in
-            prevSelectedButton = prev
-        }
         .focused($chartIsFocused)
-        .onChange(of: chartIsFocused) { _, now in
-            if !now {
-                selectedDateOther = nil
-                selectedButton = nil
-            } else {
-                selectedButton = 50
+        .onChange(of: chartIsFocused) { _, _ in
+            if selectedDate == nil {
+                if isToday {
+                    selectedDate = Date()
+                } else {
+                    selectedDate = tideData.startTime.midday()
+                }
             }
         }
     }
 
     private func onSwipe(_ swipe: UISwipeGestureRecognizer.Direction) {
         switch swipe {
-        case .up: print("swipe: up")
-        case .down: print("swipe: down")
         case .left:
-            print("swipe: left")
-            selectedDateOther = nil
-            selectedButton = (selectedButton ?? 50) - 1
+            selectedDate = max((selectedDate ?? defaultFocusedDate) - swipeDelta, tideData.startTime)
         case .right:
-            print("swipe: right")
-            selectedDateOther = nil
-            selectedButton = (selectedButton ?? 50) + 1
+            selectedDate = min((selectedDate ?? defaultFocusedDate) + swipeDelta, tideData.stopTime)
         default:
             print("unknown: \(swipe)")
         }
-        print("selectedButton: \(selectedButton)")
     }
 
     private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
         if !chartIsFocused {
-            selectedDateOther = nil
             return
         }
         let dxdy = gesture.translation(in: nil)
@@ -250,7 +215,7 @@ struct ChartView: View {
         let secondsPerHalf = CGFloat(60 * 60 * 12)
         let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
         let newDate = centerpoint + secondsPerHalf * dPercent
-        selectedDateOther = newDate
+        selectedDate = newDate
     }
 
     private func thumb() -> some View {
@@ -283,8 +248,7 @@ struct ChartView: View {
     }
 
     @AxisContentBuilder private func getXAxisMarks() -> some AxisContent {
-        AxisMarks(preset: .extended, position: .bottom) { val in
-            let date = val.as(Date.self)!
+        AxisMarks(preset: .extended, position: .bottom) { _ in
             AxisValueLabel()
             #if os(tvOS)
                 .font(.subheadline)
@@ -311,18 +275,12 @@ struct ChartView: View {
                 let mark = bolded(PointMark(x: .value("Time", event.eventTime), y: .value("Height", event.eventHeight)))
                 switch event.eventType {
                 case .min:
-                    mark.annotation(content: {
-                        VStack {
-                            Text(event.eventTime.formatted(date: .omitted, time: .shortened)).font(.caption2)
-                            Text("\(event.eventHeight.formatted(.number.precision(.significantDigits(0 ... 2)))) ft")
-                        }.font(.caption).backgroundStyle(.thinMaterial)
-                    })
+                    mark.annotation {
+                        HeightLabel(height: event.eventHeight, time: event.eventTime)
+                    }
                 case .max:
                     mark.annotation(overflowResolution: .init(y: .fit(to: .chart)), content: {
-                        VStack {
-                            Text(event.eventTime.formatted(date: .omitted, time: .shortened)).font(.caption2)
-                            Text("\(event.eventHeight.formatted(.number.precision(.significantDigits(0 ... 2)))) ft")
-                        }.font(.caption).backgroundStyle(.thinMaterial)
+                        HeightLabel(height: event.eventHeight, time: event.eventTime)
                     })
                 default:
                     Plot {}
@@ -416,30 +374,6 @@ struct ChartView: View {
         return getAstralMarks(pairs: getMoonlightPairs(), foregroundStyle: gradient, y: y, fgSeries: "moon fg", bgSeries: "moon bg")
     }
 
-    private func drawMoonlight(_ baseSeconds: TimeInterval, _ xratio: CGFloat, _ height: CGFloat)
-        -> some View
-    {
-        return Path { path in
-            let moonEvents: [SDTideEvent] = tideData.moonriseMoonsetEvents
-            let moonPairs: [(Date, Date)] = pairRiseAndSetEvents(
-                moonEvents, riseEventType: .moonrise, setEventType: .moonset
-            )
-            for (rise, set) in moonPairs {
-                let moonriseMinutes =
-                    Int(rise.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
-                let moonsetMinutes =
-                    Int(set.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
-                let rect = CGRect(
-                    x: CGFloat(moonriseMinutes) * xratio, y: 0,
-                    width: CGFloat(moonsetMinutes) * xratio - CGFloat(moonriseMinutes) * xratio,
-                    height: height
-                )
-                path.addRect(rect)
-            }
-        }
-        .fill(Color(red: 1, green: 1, blue: 1).opacity(0.2))
-    }
-
     private func getMoonlightPairs() -> [WithID<(Date, Date)>] {
         let moonEvents: [SDTideEvent] = tideData.moonriseMoonsetEvents
         let moonPairs: [(Date, Date)] = pairRiseAndSetEvents(
@@ -455,60 +389,63 @@ struct ChartView: View {
         )
         return sunPairs.map { WithID(value: $0) }
     }
+}
 
-    private func drawDaylight(_ baseSeconds: TimeInterval, _ xratio: CGFloat, _ height: CGFloat)
-        -> some View
-    {
-        let sunEvents: [SDTideEvent] = tideData.sunriseSunsetEvents
-        let sunPairs: [(Date, Date)] = pairRiseAndSetEvents(
-            sunEvents, riseEventType: .sunrise, setEventType: .sunset
-        )
-        return Path { path in
-            for (rise, set) in sunPairs {
-                let sunriseMinutes =
-                    Int(rise.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
-                let sunsetMinutes =
-                    Int(set.timeIntervalSince1970 - baseSeconds) / ChartConstants.secondsPerMinute
-                let rect = CGRect(
-                    x: CGFloat(sunriseMinutes) * xratio, y: 0,
-                    width: CGFloat(sunsetMinutes) * xratio - CGFloat(sunriseMinutes) * xratio, height: height
-                )
-                path.addRect(rect)
-            }
-        }
-        .fill(Color(red: 0.04, green: 0.27, blue: 0.61))
+class MemoSlot<In: Equatable, Out> {
+    enum State {
+        case empty
+        case memo(prevArgs: In, prevResult: Out)
     }
 
-    private func drawBaseline(_ dim: ChartDimensions)
-        -> some View
-    {
-        let proportionalThickness = 0.015 * dim.height
-        let thickness =
-            proportionalThickness <= maxZeroThickness ? proportionalThickness : maxZeroThickness
-        return Path { baselinePath in
-            baselinePath.move(to: CGPoint(x: CGFloat(dim.xmin), y: CGFloat(dim.yoffset)))
-            baselinePath.addLine(
-                to: CGPoint(x: CGFloat(dim.xmax) * CGFloat(dim.xratio), y: CGFloat(dim.yoffset)))
+    var state: State = .empty
+
+    func use(_ compute: () -> Out, _ args: In) -> Out {
+        switch state {
+        case .empty:
+            let result = compute()
+            state = .memo(prevArgs: args, prevResult: result)
+            return result
+        case let .memo(prevArgs, prevResult):
+            if prevArgs == args {
+                return prevResult
+            }
+            let result = compute()
+            state = .memo(prevArgs: args, prevResult: result)
+            return result
         }
-        .stroke(Color.white, lineWidth: thickness)
+    }
+}
+
+struct HeightLabel: View {
+    let height: Float
+    let time: Date
+
+    let horizontalPadding: CGFloat = 6
+    let verticalPadding: CGFloat = 3
+
+    var formattedTime: String {
+        time.formatted(date: .omitted, time: .shortened)
+    }
+
+    var formattedHeight: String {
+        "\(height.formatted(.number.precision(.significantDigits(0 ... 2)))) ft"
     }
 
     var body: some View {
-        return GeometryReader { proxy in
-            let dim = calculateDimensions(proxy, tideData: tideData, percentHeight: self.percentHeight)
-
-            let day = tideData.startTime!
-            let baseSeconds: TimeInterval = day.timeIntervalSince1970
-
-            Rectangle()
-                .fill(background)
-//            drawDaylight(baseSeconds, dim.xratio, dim.height)
-//            drawMoonlight(baseSeconds, dim.xratio, dim.height)
-            drawTideLevelAsChart(baseSeconds, dim)
-//            if showZero && dim.height >= dim.yoffset {
-//                drawBaseline(dim)
-//            }
+        return VStack {
+            Text(formattedTime)
+                .font(.caption2)
+                .foregroundColor(.gray)
+                .padding(.horizontal)
+                .padding(.init(top: verticalPadding, leading: horizontalPadding, bottom: 0, trailing: horizontalPadding))
+            Text(formattedHeight)
+                .padding(.init(top: 0, leading: horizontalPadding, bottom: verticalPadding, trailing: horizontalPadding))
         }
+        .fontDesign(.rounded)
+        .font(.caption)
+        .background(.black.opacity(0.8))
+        .clipShape(RoundedRectangle(cornerSize: CGSize(width: 4, height: 4)))
+        .monospacedDigit()
     }
 }
 
