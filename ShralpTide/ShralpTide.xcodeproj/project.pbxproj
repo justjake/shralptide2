@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C136AFAB2B1333720011DF17 /* SwipeRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */; };
+		C136AFAD2B13C3D10011DF17 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAC2B13C3D10011DF17 /* Number.swift */; };
 		C16DDFA92B127C4700626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAA2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAB2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
@@ -259,6 +260,7 @@
 
 /* Begin PBXFileReference section */
 		C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizer.swift; sourceTree = "<group>"; };
+		C136AFAC2B13C3D10011DF17 /* Number.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Number.swift; sourceTree = "<group>"; };
 		C16DDFA82B127BB700626BBD /* TVContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVContentView.swift; sourceTree = "<group>"; };
 		C1E8CCCD2B10309800393AA8 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		C1E8CCCF2B10602400393AA8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -700,6 +702,7 @@
 				DC3B36BA263BB87800DA83E1 /* SDTideStation.swift */,
 				DC3B36BB263BB87800DA83E1 /* String.swift */,
 				C1E8CCCF2B10602400393AA8 /* Color.swift */,
+				C136AFAC2B13C3D10011DF17 /* Number.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1064,6 +1067,7 @@
 				DC3B36BC263BB89B00DA83E1 /* String.swift in Sources */,
 				DCF96C0C25BE3AC900255096 /* StationDetailView.swift in Sources */,
 				DC246B0A261A8E720090F38B /* TideEventsView.swift in Sources */,
+				C136AFAD2B13C3D10011DF17 /* Number.swift in Sources */,
 				DC246AEF261A6A630090F38B /* SingleDayTideModel.swift in Sources */,
 				DC115E2525B521F400954972 /* StationDataRepository.swift in Sources */,
 				DC115DE425AD56B200954972 /* FavoritesListView.swift in Sources */,

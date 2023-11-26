@@ -201,7 +201,7 @@ struct ChartView: View {
         case .right:
             selectedDate = min((selectedDate ?? defaultFocusedDate) + swipeDelta, tideData.stopTime)
         default:
-            print("unknown: \(swipe)")
+            ()
         }
     }
 
@@ -219,7 +219,7 @@ struct ChartView: View {
     }
 
     private func thumb() -> some View {
-        return Circle()
+        Circle()
             .fill(.white)
             .stroke(.black, lineWidth: 2.0)
             .frame(width: 20)
@@ -227,8 +227,8 @@ struct ChartView: View {
 
     @AxisContentBuilder private func getYAxisMarks() -> some AxisContent {
         AxisMarks(preset: .automatic, position: .leading) { val in
-            let y = val.as(Int.self)!
-            AxisValueLabel("\(y) ft")
+            let y = val.as(Float.self)!
+            AxisValueLabel(y.formatFeet())
             #if os(tvOS)
                 .font(.subheadline)
             #endif
@@ -239,8 +239,8 @@ struct ChartView: View {
             }
         }
         AxisMarks(preset: .automatic, position: .trailing) { val in
-            let y = val.as(Int.self)!
-            AxisValueLabel("\(y) ft")
+            let y = val.as(Float.self)!
+            AxisValueLabel(y.formatFeet())
             #if os(tvOS)
                 .font(.subheadline)
             #endif
@@ -314,7 +314,7 @@ struct ChartView: View {
                         .bold()
                         .fontDesign(.rounded)
                         .padding(.init(top: 4, leading: 6, bottom: 0, trailing: 4))
-                    Text(Measurement(value: Double(closest.height), unit: UnitLength.feet).formatted())
+                    Text(closest.height.formatFeet())
                         .font(.headline)
                         .bold()
                         .fontDesign(.rounded)
@@ -428,7 +428,7 @@ struct HeightLabel: View {
     }
 
     var formattedHeight: String {
-        "\(height.formatted(.number.precision(.significantDigits(0 ... 2)))) ft"
+        height.formatFeet()
     }
 
     var body: some View {
