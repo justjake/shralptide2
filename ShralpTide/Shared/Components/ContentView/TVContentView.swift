@@ -51,9 +51,7 @@ struct TVContentView: View {
 
                 ChartView(tide: tideData, background: .clear)
             } else if calculating {
-                ProgressView {
-                    Text("Reticulating splines...")
-                }
+                ProgressView()
             }
         }
         .onAppear {

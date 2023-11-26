@@ -201,6 +201,9 @@ struct ChartView: View {
         .chartYScale(domain: Float(dim.ymin) ... Float(dim.ymax))
         .chartXScale(domain: tideData.startTime ... tideData.stopTime)
         .chartXSelection(value: $selectedDateOther)
+        .chartYAxis {
+            getAxisMarks()
+        }
         .chartOverlay { _ in
             #if os(tvOS)
                 getFocusOverlay(idIntervals: idIntervals)
@@ -217,6 +220,22 @@ struct ChartView: View {
             .frame(width: 20)
     }
 
+    @AxisContentBuilder private func getAxisMarks() -> some AxisContent {
+        AxisMarks(preset: .extended, position: .leading) { val in
+            let y = val.as(Int.self)!
+            AxisValueLabel("\(y) ft")
+            if y == 0 {
+                AxisGridLine(stroke: .init(lineWidth: 3))
+            } else {
+                AxisGridLine()
+            }
+        }
+        AxisMarks(preset: .automatic, position: .trailing) { val in
+            let y = val.as(Int.self)!
+            AxisValueLabel("\(y) ft")
+        }
+    }
+
     private func getFocusOverlay(idIntervals: [WithID<SDTideInterval>]) -> some View {
         return HStack(alignment: .center, spacing: 5) {
             ForEach(0 ... 100, id: \.self) { num in
@@ -225,6 +244,7 @@ struct ChartView: View {
                         .focusable()
                         .frame(width: 2, height: 2)
                         .focused($selectedButton, equals: num)
+                        .opacity(0)
                 }
             }
         }
