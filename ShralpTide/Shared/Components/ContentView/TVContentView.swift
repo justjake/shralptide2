@@ -38,12 +38,18 @@ struct TVContentView: View {
         VStack {
             if let tideData = selectedTideModel?.tideDataToChart {
                 HStack {
+                    titleView()
+
+                    Spacer()
+
+                    Button(action: { goToday() }) {
+                        Text("Today")
+                    }
                     Button(action: { goPrev() }) {
                         Image(systemName: "arrow.left")
                     }
 
-                    titleView()
-
+                    Text(tideData.startTime.formatted(date: .abbreviated, time: .omitted)).font(.headline.monospacedDigit())
                     Button(action: { goNext() }) {
                         Image(systemName: "arrow.right")
                     }
@@ -63,10 +69,7 @@ struct TVContentView: View {
 
     @ViewBuilder func titleView() -> some View {
         if let tideData = selectedTideModel?.tideDataToChart {
-            VStack {
-                Text(tideData.shortLocationName).font(.headline)
-                Text(tideData.startTime.formatted(date: .abbreviated, time: .omitted)).font(.subheadline)
-            }
+            Text(tideData.shortLocationName).font(.title)
         }
     }
 
@@ -89,6 +92,16 @@ struct TVContentView: View {
 
     func goNext() {
         go(dayDelta: 1)
+    }
+
+    func goToday() {
+        if let today = appState.calendarTides.first(where: {
+            $0.day == Date().startOfDay()
+        }) {
+            selectedTideModel = today
+        } else {
+            // TODO: move month & refresh
+        }
     }
 
     fileprivate func backgroundRefreshTides() {

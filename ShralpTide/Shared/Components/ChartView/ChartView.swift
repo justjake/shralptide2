@@ -202,7 +202,10 @@ struct ChartView: View {
         .chartXScale(domain: tideData.startTime ... tideData.stopTime)
         .chartXSelection(value: $selectedDateOther)
         .chartYAxis {
-            getAxisMarks()
+            getYAxisMarks()
+        }
+        .chartXAxis {
+            getXAxisMarks()
         }
         .chartOverlay { _ in
             #if os(tvOS)
@@ -220,10 +223,13 @@ struct ChartView: View {
             .frame(width: 20)
     }
 
-    @AxisContentBuilder private func getAxisMarks() -> some AxisContent {
+    @AxisContentBuilder private func getYAxisMarks() -> some AxisContent {
         AxisMarks(preset: .extended, position: .leading) { val in
             let y = val.as(Int.self)!
             AxisValueLabel("\(y) ft")
+            #if os(tvOS)
+                .font(.subheadline)
+            #endif
             if y == 0 {
                 AxisGridLine(stroke: .init(lineWidth: 3))
             } else {
@@ -233,6 +239,20 @@ struct ChartView: View {
         AxisMarks(preset: .automatic, position: .trailing) { val in
             let y = val.as(Int.self)!
             AxisValueLabel("\(y) ft")
+            #if os(tvOS)
+                .font(.subheadline)
+            #endif
+        }
+    }
+
+    @AxisContentBuilder private func getXAxisMarks() -> some AxisContent {
+        AxisMarks(preset: .extended, position: .bottom) { val in
+            let date = val.as(Date.self)!
+            AxisValueLabel()
+            #if os(tvOS)
+                .font(.subheadline)
+            #endif
+            AxisGridLine()
         }
     }
 
