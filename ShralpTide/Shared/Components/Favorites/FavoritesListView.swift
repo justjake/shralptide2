@@ -25,8 +25,6 @@ struct FavoritesListView: View {
         UITableViewCell.appearance().backgroundColor = .clear
 
         return ZStack {
-            Image("background-gradient")
-                .resizable()
             VStack(spacing: 0) {
                 Button(action: {
                     isShowing = false

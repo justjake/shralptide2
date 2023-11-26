@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		C136AFAB2B1333720011DF17 /* SwipeRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */; };
 		C136AFAD2B13C3D10011DF17 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAC2B13C3D10011DF17 /* Number.swift */; };
+		C136AFAE2B13C7640011DF17 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAC2B13C3D10011DF17 /* Number.swift */; };
+		C136AFAF2B13C7660011DF17 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAC2B13C3D10011DF17 /* Number.swift */; };
+		C136AFB02B13CF0F0011DF17 /* Number.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAC2B13C3D10011DF17 /* Number.swift */; };
 		C16DDFA92B127C4700626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAA2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAB2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
@@ -1047,6 +1050,7 @@
 				C1E8CCD12B10602400393AA8 /* Color.swift in Sources */,
 				DC25E6CE2636870900D214D0 /* HostingController.swift in Sources */,
 				DC3B36CC263BB8A200DA83E1 /* String.swift in Sources */,
+				C136AFAF2B13C7660011DF17 /* Number.swift in Sources */,
 				DCD7C96826507C09006327D2 /* Array+RawRepresentable.swift in Sources */,
 				DC86D9F52649F2B9000C9CE4 /* StationSelectionView.swift in Sources */,
 				DC25E6D22636870900D214D0 /* ExtensionDelegate.swift in Sources */,
@@ -1164,6 +1168,7 @@
 				DCC85C75267C2916007E0C0B /* TideWidgetExtension.intentdefinition in Sources */,
 				DCEA90122693B9AB00B8A6C7 /* StationDataRepository.swift in Sources */,
 				DCEA90202693BAB200B8A6C7 /* SingleDayTideModel.swift in Sources */,
+				C136AFAE2B13C7640011DF17 /* Number.swift in Sources */,
 				DC1FE87D269BC0720015F6AA /* WidgetChartView.swift in Sources */,
 				DCEA90232693BAED00B8A6C7 /* SDTideStation.swift in Sources */,
 				DCC85C70267C2915007E0C0B /* TideWidgetExtension.swift in Sources */,
@@ -1191,6 +1196,7 @@
 				DCEA90022693B6D600B8A6C7 /* shralptide.xcdatamodeld in Sources */,
 				DCEA8FF82693B57100B8A6C7 /* AppStateRepository.swift in Sources */,
 				DCEA8FFD2693B5A100B8A6C7 /* ModelMigrate2To3.swift in Sources */,
+				C136AFB02B13CF0F0011DF17 /* Number.swift in Sources */,
 				DCEA8FFA2693B57F00B8A6C7 /* NoaaStationData.swift in Sources */,
 				DCEA90242693BAEE00B8A6C7 /* SDTideStation.swift in Sources */,
 				DCEA8FFB2693B58500B8A6C7 /* StationData.swift in Sources */,

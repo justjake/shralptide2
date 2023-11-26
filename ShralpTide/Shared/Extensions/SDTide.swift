@@ -14,10 +14,9 @@ import Foundation
 
 extension SDTide {
     var currentTideString: String {
-        String(
-            format: "%.2f%@%@", Float(nearestDataPointToCurrentTime.y),
-            unitShort, tideDirection == .rising ? "▲" : "▼"
-        )
+        let direction = tideDirection == .rising ? "▲" : "▼"
+        let feet = Float(nearestDataPointToCurrentTime.y).formatFeet()
+        return feet + direction
     }
 }
 

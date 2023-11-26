@@ -36,8 +36,9 @@ struct MonthView: View {
                 Button(action: {
                     displayMonth -= 1
                 }) {
-                    Image(systemName: "backward")
+                    Image(systemName: "arrow.left")
                 }
+                .padding()
                 .disabled(calculating)
                 Spacer()
                 Text(monthYearString())
@@ -56,7 +57,7 @@ struct MonthView: View {
                 Button(action: {
                     displayMonth += 1
                 }) {
-                    Image(systemName: "forward")
+                    Image(systemName: "arrow.right")
                 }
                 .padding()
                 .disabled(calculating)

@@ -83,6 +83,7 @@ struct SwipeModifier: ViewModifier {
         content
             .overlay {
                 SwipeRecognizerView(swipe: swipe, pan: pan)
+                #if os(tvOS)
                     .focusable()
                     .onMoveCommand(perform: { direction in
                         guard let swipe = swipe else { return }
@@ -97,6 +98,7 @@ struct SwipeModifier: ViewModifier {
                                 swipe(.right)
                         }
                     })
+                #endif
             }
     }
 }

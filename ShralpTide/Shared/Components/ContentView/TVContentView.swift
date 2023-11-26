@@ -53,9 +53,12 @@ struct TVContentView: View {
                     Button(action: { goNext() }) {
                         Image(systemName: "arrow.right")
                     }
-                }.focusSection()
+                }
+                #if os(tvOS)
+                .focusSection()
+                #endif
 
-                ChartView(tide: tideData, background: .clear)
+                ChartView(tide: tideData, background: .clear, interactive: true, scale: .large)
             } else if calculating {
                 ProgressView()
             }

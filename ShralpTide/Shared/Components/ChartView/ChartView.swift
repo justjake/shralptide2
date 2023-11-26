@@ -13,23 +13,32 @@ import Charts
 import SwiftUI
 
 struct ChartView: View {
+    enum Scale {
+        case large
+        case small
+    }
+
     @State private var selectedDate: Date?
     @FocusState private var chartIsFocused: Bool
 
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
+    private let interactive: Bool
+    private let scale: Scale
 
     private var showZero: Bool
     private var tideData: SDTide
     private var percentHeight: CGFloat
     private var background: Color
 
-    init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black) {
+    init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black, interactive: Bool = false, scale: Scale = .small) {
         tideData = tide
         dateFormatter.dateStyle = .full
         self.showZero = showZero
         self.percentHeight = percentHeight
         self.background = background
+        self.interactive = interactive
+        self.scale = scale
     }
 
     var body: some View {
@@ -159,16 +168,17 @@ struct ChartView: View {
             }
 
             // If hovered / dragged, render the thumb.
-
-            if let hoveredDate = selectedDate {
-                if let interval = closest(to: hoveredDate) {
-                    #if os(tvOS)
-                        if chartIsFocused {
+            if interactive {
+                if let hoveredDate = selectedDate {
+                    if let interval = closest(to: hoveredDate) {
+                        #if os(tvOS)
+                            if chartIsFocused {
+                                getHoveredMark(interval)
+                            }
+                        #else
                             getHoveredMark(interval)
-                        }
-                    #else
-                        getHoveredMark(interval)
-                    #endif
+                        #endif
+                    }
                 }
             }
         }
@@ -181,6 +191,7 @@ struct ChartView: View {
         .chartXAxis {
             getXAxisMarks()
         }
+        #if os(tvOS)
         .onSwipeGesture(swipe: { onSwipe($0) }, pan: { onPan($0, dim: dim) })
         .focused($chartIsFocused)
         .onChange(of: chartIsFocused) { _, _ in
@@ -192,31 +203,34 @@ struct ChartView: View {
                 }
             }
         }
+        #endif
     }
 
-    private func onSwipe(_ swipe: UISwipeGestureRecognizer.Direction) {
-        switch swipe {
-        case .left:
-            selectedDate = max((selectedDate ?? defaultFocusedDate) - swipeDelta, tideData.startTime)
-        case .right:
-            selectedDate = min((selectedDate ?? defaultFocusedDate) + swipeDelta, tideData.stopTime)
-        default:
-            ()
+    #if os(tvOS)
+        private func onSwipe(_ swipe: UISwipeGestureRecognizer.Direction) {
+            switch swipe {
+            case .left:
+                selectedDate = max((selectedDate ?? defaultFocusedDate) - swipeDelta, tideData.startTime)
+            case .right:
+                selectedDate = min((selectedDate ?? defaultFocusedDate) + swipeDelta, tideData.stopTime)
+            default:
+                ()
+            }
         }
-    }
 
-    private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
-        if !chartIsFocused {
-            return
+        private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
+            if !chartIsFocused {
+                return
+            }
+            let dxdy = gesture.translation(in: nil)
+            print("pan: translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size)")
+            let dPercent = dxdy.x / dim.proxy.size.width
+            let secondsPerHalf = CGFloat(60 * 60 * 12)
+            let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
+            let newDate = centerpoint + secondsPerHalf * dPercent
+            selectedDate = newDate
         }
-        let dxdy = gesture.translation(in: nil)
-        print("pan: translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size)")
-        let dPercent = dxdy.x / dim.proxy.size.width
-        let secondsPerHalf = CGFloat(60 * 60 * 12)
-        let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
-        let newDate = centerpoint + secondsPerHalf * dPercent
-        selectedDate = newDate
-    }
+    #endif
 
     private func thumb() -> some View {
         Circle()
@@ -226,34 +240,38 @@ struct ChartView: View {
     }
 
     @AxisContentBuilder private func getYAxisMarks() -> some AxisContent {
-        AxisMarks(preset: .automatic, position: .leading) { val in
-            let y = val.as(Float.self)!
-            AxisValueLabel(y.formatFeet())
+        if scale == .large {
             #if os(tvOS)
-                .font(.subheadline)
+                AxisMarks(preset: .automatic, position: .leading) { val in
+                    let y = val.as(Float.self)!
+                    AxisValueLabel(y.formatFeet())
+                        .font(.subheadline)
+                    if y == 0 {
+                        AxisGridLine(stroke: .init(lineWidth: 3))
+                    } else {
+                        AxisGridLine()
+                    }
+                }
             #endif
-            if y == 0 {
-                AxisGridLine(stroke: .init(lineWidth: 3))
-            } else {
-                AxisGridLine()
+            AxisMarks(preset: .automatic, position: .trailing) { val in
+                let y = val.as(Float.self)!
+                AxisValueLabel(y.formatFeet())
+                #if os(tvOS)
+                    .font(.subheadline)
+                #endif
             }
-        }
-        AxisMarks(preset: .automatic, position: .trailing) { val in
-            let y = val.as(Float.self)!
-            AxisValueLabel(y.formatFeet())
-            #if os(tvOS)
-                .font(.subheadline)
-            #endif
         }
     }
 
     @AxisContentBuilder private func getXAxisMarks() -> some AxisContent {
-        AxisMarks(preset: .extended, position: .bottom) { _ in
-            AxisValueLabel()
-            #if os(tvOS)
-                .font(.subheadline)
-            #endif
-            AxisGridLine()
+        if scale == .large {
+            AxisMarks(preset: .extended, position: .bottom) { _ in
+                AxisValueLabel()
+                #if os(tvOS)
+                    .font(.subheadline)
+                #endif
+                AxisGridLine()
+            }
         }
     }
 
@@ -276,11 +294,19 @@ struct ChartView: View {
                 switch event.eventType {
                 case .min:
                     mark.annotation {
-                        HeightLabel(height: event.eventHeight, time: event.eventTime)
+                        if scale == .large {
+                            HeightLabel(height: event.eventHeight, time: event.eventTime)
+                        } else {
+                            Text("L").font(.caption).fontDesign(.rounded)
+                        }
                     }
                 case .max:
                     mark.annotation(overflowResolution: .init(y: .fit(to: .chart)), content: {
-                        HeightLabel(height: event.eventHeight, time: event.eventTime)
+                        if scale == .large {
+                            HeightLabel(height: event.eventHeight, time: event.eventTime)
+                        } else {
+                            Text("H").font(.caption).fontDesign(.rounded)
+                        }
                     })
                 default:
                     Plot {}

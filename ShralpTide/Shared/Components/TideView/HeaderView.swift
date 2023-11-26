@@ -22,8 +22,6 @@ struct HeaderView: View {
     var body: some View {
         VStack(spacing: 10) {
             if isLoctionShown {
-                Spacer()
-                    .frame(maxHeight: 70)
                 Text(
                     appState.tides.count > 0 ? appState.tides[appState.locationPage].shortLocationName : ""
                 )
@@ -32,7 +30,7 @@ struct HeaderView: View {
                 .minimumScaleFactor(0.2)
             }
             Text(appState.currentTideDisplay)
-                .font(Font.system(size: 96))
+                .font(Font.system(size: 82))
                 .fontWeight(.medium)
                 .lineLimit(1)
                 .minimumScaleFactor(0.2)

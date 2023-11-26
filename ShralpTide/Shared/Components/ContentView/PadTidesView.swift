@@ -75,17 +75,10 @@ struct PadTidesView: View {
                         }
                     }
                     .frame(height: proxy.size.height * (isPortrait ? portraitRatio : landscapeRatio))
-                    .background(Image("background-gradient").resizable())
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                     if let tideData = selectedTideDay?.tideDataToChart {
-                        ChartView(tide: tideData)
+                        ChartView(tide: tideData, interactive: true, scale: .large)
                             .gesture(pressDrag)
-                            .modifier(LabeledChartViewModifier(tide: tideData, labelInset: 15))
-                            .modifier(
-                                InteractiveChartViewModifier(
-                                    tide: tideData, currentIndex: $pageIndex, cursorLocation: $cursorLocation
-                                )
-                            )
                             .modifier(
                                 LocationDateViewModifier(date: selectedTideDay?.day ?? Date())
                             )

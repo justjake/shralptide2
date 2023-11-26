@@ -22,7 +22,7 @@ struct TideEventsPageView: View {
     }
 
     var body: some View {
-        return GeometryReader { proxy in
+        return GeometryReader { _ in
             TabView(selection: $pageIndex) {
                 ForEach(0 ..< appState.tidesForDays.count, id: \.self) { index in
                     VStack(alignment: .center, spacing: 0) {
@@ -33,14 +33,11 @@ struct TideEventsPageView: View {
                             .minimumScaleFactor(0.2)
                         ChartView(
                             tide: tide,
-                            showZero: true
+                            showZero: true,
+                            interactive: true,
+                            scale: .large
                         )
                         .animation(.none)
-                        .modifier(SunMoonLabelsChartViewModifier(tide: tide))
-                        .frame(width: UIScreen.main.bounds.width, height: proxy.size.height * 0.18)
-                        TideEventsView(tide: tide)
-                            .padding(.top, 20)
-                            .padding(.bottom, 60)
                     }
                     .font(.title)
                     .foregroundColor(.white)

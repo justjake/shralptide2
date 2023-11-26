@@ -22,82 +22,83 @@ struct PhoneContentView: View {
         return EmptyView()
         #else
         return GeometryReader { proxy in
-            Rectangle()
-                .background(Color("background-color"))
             if isFirstLaunch || proxy.size.width < proxy.size.height {
-                ZStack {
-                    Image("background-gradient").resizable()
-                    VStack(spacing: 0) {
-                        HeaderView()
-                            .frame(
-                                minHeight: proxy.size.height / 3.5,
-                                maxHeight: proxy.size.height / 2
-                            )
-                            .padding()
-                        TideEventsPageView(pageIndex: $pageIndex)
-                            .frame(minHeight: proxy.size.height / 1.8, maxHeight: proxy.size.height / 1.8)
-                        HStack {
-                            Button(action: {
-                                UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                            }) {
-                                Image(systemName: "gearshape")
-                                    .font(.system(size: 24))
-                            }
-                            .padding(.leading)
-                            Spacer()
-                            Button(action: { showingFavorites = true }) {
-                                Image(systemName: "list.bullet")
-                                    .font(.system(size: 24))
-                            }
-                            .padding()
-                            .sheet(isPresented: $showingFavorites) {
-                                FavoritesListView(isShowing: $showingFavorites)
-                                    .environmentObject(self.appState)
-                                    .environmentObject(self.config)
-                            }
-                        }
-                        .frame(
-                            width: proxy.size.width,
-                            height: proxy.size.height * 0.1
-                        )
-                    }
-                }
-                .ignoresSafeArea()
-                .frame(width: proxy.size.width, height: proxy.size.height)
-                .onAppear {
-                    isFirstLaunch = false
-                }
+                portrait(proxy)
             } else {
-                let dragGesture = DragGesture(minimumDistance: 0)
-                    .onChanged {
-                        self.cursorLocation = $0.location
-                    }
-                    .onEnded { _ in
-                        self.cursorLocation = .zero
-                    }
-
-                let pressGesture = LongPressGesture(minimumDuration: 0.2)
-
-                let pressDrag = pressGesture.sequenced(before: dragGesture)
-
-                let swipeDrag = DragGesture()
-                    .updating(self.$translation) { value, state, _ in
-                        state = value.translation.width
-                    }
-                    .onEnded { value in
-                        let offset = value.translation.width / proxy.size.width
-                        let newIndex = offset > 0 ? pageIndex - 1 : pageIndex + 1
-                        self.pageIndex = min(max(Int(newIndex), 0), appState.tidesForDays.count - 1)
-                    }
-
-                let exclusive = pressDrag.exclusively(before: swipeDrag)
-                TideGraphView(pageIndex: $pageIndex, cursorLocation: $cursorLocation)
-                    .gesture(exclusive)
-                    .ignoresSafeArea()
+                landscape(proxy)
             }
         }
         .statusBar(hidden: false)
         .accentColor(.white)
         #endif
+    }
+
+    @ViewBuilder func portrait(_ proxy: GeometryProxy) -> some View {
+        ZStack {
+            VStack(spacing: 0) {
+                HeaderView()
+                    .padding()
+                TideEventsPageView(pageIndex: $pageIndex)
+                    .frame(minHeight: proxy.size.height / 1.8, maxHeight: proxy.size.height / 1.8)
+                HStack {
+                    Button(action: {
+                        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                    }) {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 24))
+                    }
+                    .padding(.leading)
+                    Spacer()
+                    Button(action: { showingFavorites = true }) {
+                        Image(systemName: "list.bullet")
+                            .font(.system(size: 24))
+                    }
+                    .padding()
+                    .sheet(isPresented: $showingFavorites) {
+                        FavoritesListView(isShowing: $showingFavorites)
+                            .environmentObject(self.appState)
+                            .environmentObject(self.config)
+                    }
+                }
+                .frame(
+                    width: proxy.size.width,
+                    height: proxy.size.height * 0.1
+                )
+            }
+        }
+        .ignoresSafeArea()
+        .frame(width: proxy.size.width, height: proxy.size.height)
+        .onAppear {
+            isFirstLaunch = false
+        }
+    }
+
+    @ViewBuilder func landscape(_ proxy: GeometryProxy) -> some View {
+        let dragGesture = DragGesture(minimumDistance: 0)
+            .onChanged {
+                self.cursorLocation = $0.location
+            }
+            .onEnded { _ in
+                self.cursorLocation = .zero
+            }
+
+        let pressGesture = LongPressGesture(minimumDuration: 0.2)
+
+        let pressDrag = pressGesture.sequenced(before: dragGesture)
+
+        let swipeDrag = DragGesture()
+            .updating($translation) { value, state, _ in
+                state = value.translation.width
+            }
+            .onEnded { value in
+                let offset = value.translation.width / proxy.size.width
+                let newIndex = offset > 0 ? pageIndex - 1 : pageIndex + 1
+                self.pageIndex = min(max(Int(newIndex), 0), appState.tidesForDays.count - 1)
+            }
+
+        let exclusive = pressDrag.exclusively(before: swipeDrag)
+        TideGraphView(pageIndex: $pageIndex, cursorLocation: $cursorLocation)
+            .gesture(exclusive)
+            .ignoresSafeArea()
     }
 }
