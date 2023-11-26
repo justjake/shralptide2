@@ -9,79 +9,112 @@ import Foundation
 import SwiftUI
 import UIKit
 
-typealias SwipeAction = (UISwipeGestureRecognizer.Direction) -> Void
+public typealias SwipeAction = (UISwipeGestureRecognizer.Direction) -> Void
+public typealias PanAction = (UIPanGestureRecognizer) -> Void
 
 struct SwipeRecognizerView: UIViewRepresentable {
-    let action: SwipeAction
+    let swipe: SwipeAction?
+    let pan: PanAction?
     
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
-        let upSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
-        upSwipeRecognizer.direction = .up
         
-        let downSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
-        downSwipeRecognizer.direction = .down
+        if swipe != nil {
+            let upSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
+            upSwipeRecognizer.direction = .up
         
-        let leftSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
-        leftSwipeRecognizer.direction = .left
+            let downSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
+            downSwipeRecognizer.direction = .down
         
-        let rightSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
-        rightSwipeRecognizer.direction = .right
+            let leftSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
+            leftSwipeRecognizer.direction = .left
         
-        view.addGestureRecognizer(upSwipeRecognizer)
-        view.addGestureRecognizer(downSwipeRecognizer)
-        view.addGestureRecognizer(leftSwipeRecognizer)
-        view.addGestureRecognizer(rightSwipeRecognizer)
+            let rightSwipeRecognizer = UISwipeGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToSwipeGesture))
+            rightSwipeRecognizer.direction = .right
+        
+            view.addGestureRecognizer(upSwipeRecognizer)
+            view.addGestureRecognizer(downSwipeRecognizer)
+            view.addGestureRecognizer(leftSwipeRecognizer)
+            view.addGestureRecognizer(rightSwipeRecognizer)
+        }
+        
+        if pan != nil {
+            let panRecognizer = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.respondToPanGesture))
+            view.addGestureRecognizer(panRecognizer)
+        }
         
         return view
     }
     
     class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        let action: SwipeAction
+        let swipe: SwipeAction?
+        let pan: PanAction?
         
-        init(action: @escaping SwipeAction) {
-            self.action = action
+        init(swipe: SwipeAction?, pan: PanAction?) {
+            self.swipe = swipe
+            self.pan = pan
         }
         
         @objc func respondToSwipeGesture(gesture: UIGestureRecognizer) {
             guard let swipeGesture = gesture as? UISwipeGestureRecognizer else { return }
-            action(swipeGesture.direction)
+            guard let onSwipe = swipe else { return }
+            onSwipe(swipeGesture.direction)
+        }
+        
+        @objc func respondToPanGesture(gesture: UIGestureRecognizer) {
+            guard let panGesture = gesture as? UIPanGestureRecognizer else { return }
+            guard let onPan = pan else { return }
+            onPan(panGesture)
         }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(action: action)
+        Coordinator(swipe: swipe, pan: pan)
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
 struct SwipeModifier: ViewModifier {
-    let action: SwipeAction
+    let swipe: SwipeAction?
+    let pan: PanAction?
     
     func body(content: Content) -> some View {
         content
             .overlay {
-                SwipeRecognizerView(action: action)
+                SwipeRecognizerView(swipe: swipe, pan: pan)
                     .focusable()
                     .onMoveCommand(perform: { direction in
+                        guard let swipe = swipe else { return }
                         switch direction {
                             case .down:
-                                action(.down)
+                                swipe(.down)
                             case .up:
-                                action(.up)
+                                swipe(.up)
                             case .left:
-                                action(.left)
+                                swipe(.left)
                             case .right:
-                                action(.right)
+                                swipe(.right)
                         }
                     })
             }
     }
 }
 
-extension View {
-    func onSwipeGesture(perform: @escaping SwipeAction) -> some View {
-        return modifier(SwipeModifier(action: perform))
+struct PanModifier: ViewModifier {
+    let action: PanAction
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                SwipeRecognizerView(swipe: nil, pan: action)
+                    .focusable()
+            }
+    }
+}
+
+public extension View {
+    func onSwipeGesture(swipe: @escaping SwipeAction, pan: @escaping PanAction) -> some View {
+        return modifier(SwipeModifier(swipe: swipe, pan: pan))
     }
 }

@@ -61,6 +61,7 @@ internal func calculateDimensions(_ proxy: GeometryProxy, tideData: SDTide, perc
     let xratio = CGFloat(proxy.size.width) / CGFloat(xmax)
 
     return ChartDimensions(
+        proxy: proxy,
         xratio: xratio,
         height: chartBottom,
         yoffset: yoffset,
@@ -93,6 +94,7 @@ internal func currentTimeInMinutes(tideData: SDTide) -> Int {
 }
 
 struct ChartDimensions {
+    let proxy: GeometryProxy
     let xratio: CGFloat
     let height: CGFloat
     let yoffset: CGFloat

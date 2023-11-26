@@ -16,6 +16,7 @@ struct ChartView: View {
     @State private var selectedDateOther: Date?
     @State private var prevSelectedButton: Int?
     @FocusState private var selectedButton: Int?
+    @FocusState private var chartFocused: Bool?
 
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
@@ -207,13 +208,45 @@ struct ChartView: View {
         .chartXAxis {
             getXAxisMarks()
         }
-        .chartOverlay { _ in
-            #if os(tvOS)
-                getFocusOverlay(idIntervals: idIntervals)
-            #endif
-        }.onChange(of: selectedButton) { prev, _ in
+        .onSwipeGesture(swipe: { onSwipe($0) }, pan: { onPan($0, dim: dim) })
+        .onChange(of: selectedButton) { prev, _ in
             prevSelectedButton = prev
         }
+//        .onChange(of: chartFocused) { _, now in
+//            if !now {
+//                selectedDateOther = nil
+//                selectedButton = nil
+//            } else {
+//                selectedButton = 50
+//            }
+//        }
+    }
+
+    private func onSwipe(_ swipe: UISwipeGestureRecognizer.Direction) {
+        switch swipe {
+        case .up: print("swipe: up")
+        case .down: print("swipe: down")
+        case .left:
+            print("swipe: left")
+            selectedDateOther = nil
+            selectedButton = (selectedButton ?? 50) - 1
+        case .right:
+            print("swipe: right")
+            selectedDateOther = nil
+            selectedButton = (selectedButton ?? 50) + 1
+        default:
+            print("unknown: \(swipe)")
+        }
+    }
+
+    private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
+        let dxdy = gesture.translation(in: nil)
+        print("pan: translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size)")
+        let dPercent = dxdy.x / dim.proxy.size.width
+        let secondsPerHalf = CGFloat(60 * 60 * 12)
+        let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
+        let newDate = centerpoint + secondsPerHalf * dPercent
+        selectedDateOther = newDate
     }
 
     private func thumb() -> some View {
@@ -254,22 +287,6 @@ struct ChartView: View {
             #endif
             AxisGridLine()
         }
-    }
-
-    private func getFocusOverlay(idIntervals: [WithID<SDTideInterval>]) -> some View {
-        return HStack(alignment: .center, spacing: 5) {
-            ForEach(0 ... 100, id: \.self) { num in
-                if raisedButton == nil || raisedButton == num {
-                    Text("\(num)")
-                        .focusable()
-                        .frame(width: 2, height: 2)
-                        .focused($selectedButton, equals: num)
-                        .opacity(0)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .focusSection()
     }
 
     @ChartContentBuilder private func bolded(_ mark: PointMark) -> some ChartContent {
