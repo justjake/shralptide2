@@ -240,6 +240,10 @@ struct ChartView: View {
     }
 
     private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
+        if !chartIsFocused {
+            selectedDateOther = nil
+            return
+        }
         let dxdy = gesture.translation(in: nil)
         print("pan: translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size)")
         let dPercent = dxdy.x / dim.proxy.size.width
@@ -257,7 +261,7 @@ struct ChartView: View {
     }
 
     @AxisContentBuilder private func getYAxisMarks() -> some AxisContent {
-        AxisMarks(preset: .extended, position: .leading) { val in
+        AxisMarks(preset: .automatic, position: .leading) { val in
             let y = val.as(Int.self)!
             AxisValueLabel("\(y) ft")
             #if os(tvOS)
@@ -307,9 +311,19 @@ struct ChartView: View {
                 let mark = bolded(PointMark(x: .value("Time", event.eventTime), y: .value("Height", event.eventHeight)))
                 switch event.eventType {
                 case .min:
-                    mark.annotation(content: { Text("L") })
+                    mark.annotation(content: {
+                        VStack {
+                            Text(event.eventTime.formatted(date: .omitted, time: .shortened)).font(.caption2)
+                            Text("\(event.eventHeight.formatted(.number.precision(.significantDigits(0 ... 2)))) ft")
+                        }.font(.caption).backgroundStyle(.thinMaterial)
+                    })
                 case .max:
-                    mark.annotation(content: { Text("H") })
+                    mark.annotation(overflowResolution: .init(y: .fit(to: .chart)), content: {
+                        VStack {
+                            Text(event.eventTime.formatted(date: .omitted, time: .shortened)).font(.caption2)
+                            Text("\(event.eventHeight.formatted(.number.precision(.significantDigits(0 ... 2)))) ft")
+                        }.font(.caption).backgroundStyle(.thinMaterial)
+                    })
                 default:
                     Plot {}
                 }
