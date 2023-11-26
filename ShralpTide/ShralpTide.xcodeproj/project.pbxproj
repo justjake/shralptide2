@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C136AFAB2B1333720011DF17 /* SwipeRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */; };
 		C16DDFA92B127C4700626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAA2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
 		C16DDFAB2B127C4800626BBD /* TVContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C16DDFA82B127BB700626BBD /* TVContentView.swift */; };
@@ -257,6 +258,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeRecognizer.swift; sourceTree = "<group>"; };
 		C16DDFA82B127BB700626BBD /* TVContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVContentView.swift; sourceTree = "<group>"; };
 		C1E8CCCD2B10309800393AA8 /* Collection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		C1E8CCCF2B10602400393AA8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -552,6 +554,7 @@
 				DC079F7F259C34BB00F1CB0E /* LabeledChartViewModifier.swift */,
 				DC115DD425ABD97100954972 /* SunMoonLabelsChartViewModifier.swift */,
 				DC246B1726214ED20090F38B /* LocationDateViewModifier.swift */,
+				C136AFAA2B1333720011DF17 /* SwipeRecognizer.swift */,
 			);
 			path = ChartView;
 			sourceTree = "<group>";
@@ -1106,6 +1109,7 @@
 				DC0DE7E92593B3C300FD75A0 /* ModelMigrate2to3.xcmappingmodel in Sources */,
 				DC0DE7FD2593B3FD00FD75A0 /* tidedata.xcdatamodeld in Sources */,
 				DCD524312607F6D900EA4C68 /* PadContentView.swift in Sources */,
+				C136AFAB2B1333720011DF17 /* SwipeRecognizer.swift in Sources */,
 				DC0DE594258C1CFC00FD75A0 /* ConfigHelper.swift in Sources */,
 				DCC85C76267C2916007E0C0B /* TideWidgetExtension.intentdefinition in Sources */,
 				DC0DE7C92593B2E400FD75A0 /* LegacyStationData.swift in Sources */,
