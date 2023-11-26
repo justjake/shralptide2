@@ -15,8 +15,8 @@ import SwiftUI
 struct ChartView: View {
     @State private var selectedDateOther: Date?
     @State private var prevSelectedButton: Int?
-    @FocusState private var selectedButton: Int?
-    @FocusState private var chartFocused: Bool?
+    @State private var selectedButton: Int?
+    @FocusState private var chartIsFocused: Bool
 
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
@@ -25,8 +25,6 @@ struct ChartView: View {
     private var tideData: SDTide
     private var percentHeight: CGFloat
     private var background: Color
-
-    @FocusState private var chartIsFocused: Bool
 
     init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black) {
         tideData = tide
@@ -212,14 +210,15 @@ struct ChartView: View {
         .onChange(of: selectedButton) { prev, _ in
             prevSelectedButton = prev
         }
-//        .onChange(of: chartFocused) { _, now in
-//            if !now {
-//                selectedDateOther = nil
-//                selectedButton = nil
-//            } else {
-//                selectedButton = 50
-//            }
-//        }
+        .focused($chartIsFocused)
+        .onChange(of: chartIsFocused) { _, now in
+            if !now {
+                selectedDateOther = nil
+                selectedButton = nil
+            } else {
+                selectedButton = 50
+            }
+        }
     }
 
     private func onSwipe(_ swipe: UISwipeGestureRecognizer.Direction) {
@@ -237,6 +236,7 @@ struct ChartView: View {
         default:
             print("unknown: \(swipe)")
         }
+        print("selectedButton: \(selectedButton)")
     }
 
     private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
