@@ -47,8 +47,8 @@ struct SwipeRecognizerView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, UIGestureRecognizerDelegate {
-        let swipe: SwipeAction?
-        let pan: PanAction?
+        var swipe: SwipeAction?
+        var pan: PanAction?
         
         init(swipe: SwipeAction?, pan: PanAction?) {
             self.swipe = swipe
@@ -72,7 +72,10 @@ struct SwipeRecognizerView: UIViewRepresentable {
         Coordinator(swipe: swipe, pan: pan)
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.pan = pan
+        context.coordinator.swipe = swipe
+    }
 }
 
 struct SwipeModifier: ViewModifier {

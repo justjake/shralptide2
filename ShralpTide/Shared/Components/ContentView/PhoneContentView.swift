@@ -34,6 +34,7 @@ struct PhoneContentView: View {
     }
 
     @ViewBuilder func portrait(_ proxy: GeometryProxy) -> some View {
+        #if !os(tvOS)
         ZStack {
             VStack(spacing: 0) {
                 HeaderView()
@@ -71,9 +72,11 @@ struct PhoneContentView: View {
         .onAppear {
             isFirstLaunch = false
         }
+        #endif
     }
 
     @ViewBuilder func landscape(_ proxy: GeometryProxy) -> some View {
+        #if !os(tvOS)
         let dragGesture = DragGesture(minimumDistance: 0)
             .onChanged {
                 self.cursorLocation = $0.location
@@ -100,5 +103,6 @@ struct PhoneContentView: View {
         TideGraphView(pageIndex: $pageIndex, cursorLocation: $cursorLocation)
             .gesture(exclusive)
             .ignoresSafeArea()
+        #endif
     }
 }

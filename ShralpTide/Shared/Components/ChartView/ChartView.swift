@@ -19,6 +19,7 @@ struct ChartView: View {
     }
 
     @State private var selectedDate: Date?
+    @State private var lastPanAt: Date?
     @FocusState private var chartIsFocused: Bool
 
     private let dateFormatter = DateFormatter()
@@ -30,6 +31,8 @@ struct ChartView: View {
     private var tideData: SDTide
     private var percentHeight: CGFloat
     private var background: Color
+
+    private let debugID = UUID()
 
     init(tide: SDTide, showZero: Bool = true, percentHeight: CGFloat = 0.8, background: Color = .black, interactive: Bool = false, scale: Scale = .small) {
         tideData = tide
@@ -48,6 +51,7 @@ struct ChartView: View {
             let day = tideData.startTime!
             let baseSeconds: TimeInterval = day.timeIntervalSince1970
 
+            let _ = print("outer", day, baseSeconds, Date(timeIntervalSince1970: baseSeconds))
             Rectangle().fill(background)
             drawTideLevelAsChart(baseSeconds, dim)
         }
@@ -102,6 +106,7 @@ struct ChartView: View {
     private func drawTideLevelAsChart(
         _ baseSeconds: TimeInterval, _ dim: ChartDimensions
     ) -> some View {
+        print(tideData.startTime, Date(timeIntervalSince1970: baseSeconds))
         let intervalsForDay: [SDTideInterval] = tideData.intervals(
             from: Date(timeIntervalSince1970: baseSeconds), forHours: tideData.hoursToPlot()
         )
@@ -114,6 +119,8 @@ struct ChartView: View {
                 return leftDelta < rightDelta
             }).first
         }
+
+        let _ = print("render debug id = \(debugID)")
 
         return Chart {
             getMoonlightMarks()
@@ -192,7 +199,7 @@ struct ChartView: View {
             getXAxisMarks()
         }
         #if os(tvOS)
-        .onSwipeGesture(swipe: { onSwipe($0) }, pan: { onPan($0, dim: dim) })
+        .onSwipeGesture(swipe: { onSwipe($0) }, pan: { onPan($0, dim: dim, tideData: tideData) })
         .focused($chartIsFocused)
         .onChange(of: chartIsFocused) { _, _ in
             if selectedDate == nil {
@@ -218,17 +225,18 @@ struct ChartView: View {
             }
         }
 
-        private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions) {
+        private func onPan(_ gesture: UIPanGestureRecognizer, dim: ChartDimensions, tideData: SDTide) {
             if !chartIsFocused {
                 return
             }
             let dxdy = gesture.translation(in: nil)
-            print("pan: translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size)")
+            print("pan: id \(debugID), translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size), startTime: \(tideData.startTime!)")
+            lastPanAt = Date()
             let dPercent = dxdy.x / dim.proxy.size.width
             let secondsPerHalf = CGFloat(60 * 60 * 12)
             let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
             let newDate = centerpoint + secondsPerHalf * dPercent
-            selectedDate = newDate
+            selectedDate = min(max(newDate, tideData.startTime), tideData.stopTime)
         }
     #endif
 
