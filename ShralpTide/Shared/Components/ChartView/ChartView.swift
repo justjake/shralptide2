@@ -21,6 +21,7 @@ struct ChartView: View {
     @State private var selectedDate: Date?
     @State private var lastPanAt: Date?
     @FocusState private var chartIsFocused: Bool
+    @State private var panGesture = PanInteraction()
 
     private let dateFormatter = DateFormatter()
     private let maxZeroThickness: CGFloat = 2
@@ -229,14 +230,13 @@ struct ChartView: View {
             if !chartIsFocused {
                 return
             }
-            let dxdy = gesture.translation(in: nil)
-            print("pan: id \(debugID), translation \(dxdy), velocity: \(gesture.velocity(in: nil)), geo: \(dim.proxy.size), startTime: \(tideData.startTime!)")
-            lastPanAt = Date()
-            let dPercent = dxdy.x / dim.proxy.size.width
-            let secondsPerHalf = CGFloat(60 * 60 * 12)
-            let centerpoint = Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!
-            let newDate = centerpoint + secondsPerHalf * dPercent
-            selectedDate = min(max(newDate, tideData.startTime), tideData.stopTime)
+            selectedDate = panGesture.pan(
+                gesture: gesture,
+                dim: dim,
+                currentPosition: selectedDate ??
+                    Calendar.current.date(byAdding: .init(hour: 12), to: tideData.startTime)!,
+                tideData: tideData
+            )
         }
     #endif
 
@@ -486,4 +486,35 @@ struct HeightLabel: View {
 struct WithID<T>: Identifiable {
     let value: T
     let id = UUID()
+}
+
+class PanInteraction {
+    var origin: Date?
+    var lastPanAt: Date?
+    let panTimeoutSeconds: TimeInterval = 0.25
+
+    func pan(
+        gesture: UIPanGestureRecognizer,
+        dim: ChartDimensions,
+        currentPosition: Date,
+        tideData: SDTide
+    ) -> Date {
+        // Update origin if it's been long enough since the last gesture.
+        let now = Date()
+        if origin == nil {
+            origin = currentPosition
+        } else if let lastPanAt = lastPanAt {
+            if lastPanAt.distance(to: now) > panTimeoutSeconds {
+                origin = currentPosition
+            }
+        }
+        lastPanAt = now
+        let currentOrigin = origin ?? currentPosition
+
+        let dxdy = gesture.translation(in: nil)
+        let dPercent = dxdy.x / dim.proxy.size.width
+        let secondsPerHalf = CGFloat(60 * 60 * 12)
+        let newDate = currentOrigin + secondsPerHalf * dPercent
+        return min(max(newDate, tideData.startTime), tideData.stopTime)
+    }
 }
